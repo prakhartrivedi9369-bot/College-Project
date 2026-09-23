@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINI PROJECT— Peer-to-Peer Mock Sprint Repository</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        paper: {
+                            DEFAULT: '#f4eee1',
+                            light: '#faf6ee',
+                            dark: '#e5dccb',
+                            border: '#d4c7b0'
+                        },
+                        walnut: {
+                            DEFAULT: '#2c1d11',
+                            light: '#422c1b',
+                            dark: '#1a120b'
+                        },
+                        brass: {
+                            DEFAULT: '#b8860b',
+                            light: '#d4af37',
+                            muted: '#966d03'
+                        },
+                        teal: {
+                            DEFAULT: '#1b4d4f',
+                            light: '#286b6e',
+                            dark: '#103233'
+                        },
+                        wax: {
+                            DEFAULT: '#8b0000',
+                            light: '#a81a1a'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        mono: ['"IBM Plex Mono"', 'Courier New', 'monospace'],
+                        sans: ['"IBM Plex Sans"', 'sans-serif'],
+                        hand: ['"Caveat"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="Front.css">
+</head>
+<body class="font-sans antialiased text-walnut-dark min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 bg-walnut-dark text-paper border-b border-brass-muted shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-full border-2 border-brass flex items-center justify-center bg-walnut text-brass-light font-serif font-bold text-xl shadow-inner">
+                    <i class="fa-solid fa-book-bookmark text-brass-light"></i>
+                </div>
+                <div>
+                    <span class="font-serif text-2xl font-bold tracking-wide text-paper-light block leading-none">MINI PROJECT</span>
+                    <span class="font-mono text-[10px] tracking-widest text-brass-light uppercase block mt-1">Peer Sprint Repository</span>
+                </div>
+            </div>
+
+<!-- Main Nav Links -->
+            <nav class="hidden md:flex items-center space-x-6 font-mono text-xs text-paper-dark uppercase tracking-wider">
+                <a href="#sprints" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-stopwatch text-brass"></i> Sprints</a>
+                <a href="#leaderboard" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-trophy text-brass"></i> Rankings</a>
+                <a href="#catalog" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-brass"></i> Catalog</a>
+                <a href="#discussions" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-comments text-brass"></i> Marginalia</a>
+                <a href="#curator" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-feather text-brass"></i> AI Curator</a>
+            </nav>
+
+            <!-- User Quick Status / CTAs -->
+            <div class="flex items-center space-x-4">
+                <button onclick="openModal('New Sprint Request', 'Choose a category to launch a peer sprint round immediately.')" class="hidden sm:inline-flex items-center gap-2 bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-semibold px-4 py-2.5 rounded transition-colors shadow">
+                    <i class="fa-solid fa-plus"></i> Launch Sprint
+                </button>
+                <div class="flex items-center gap-2 bg-walnut px-3 py-1.5 rounded border border-walnut-light">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="font-mono text-xs text-paper-light"><strong id="livePeerCount">94</strong> Peers Active</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NOTIFICATION BANNER -->
+    <div id="toastNotification" class="hidden fixed bottom-6 right-6 z-50 bg-walnut text-paper-light border-2 border-brass p-4 rounded-lg shadow-2xl max-w-sm font-mono text-xs flex items-start gap-3 transform transition-all duration-300">
+        <div class="wax-seal w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-paper font-serif font-bold">!</div>
+        <div class="flex-1">
+            <h5 class="font-bold text-brass-light uppercase mb-1" id="toastTitle">System Notice</h5>
+            <p id="toastMessage" class="text-paper-dark">Your sprint session has been logged to the archive.</p>
+        </div>
+        <button onclick="closeToast()" class="text-paper-dark hover:text-paper"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- SECTION 1: HERO & USER PROFILE WIDGET -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+            <!-- Hero Copy Card (8 Cols) -->
+            <div class="lg:col-span-8 library-card p-8 sm:p-10 rounded-lg flex flex-col justify-between relative overflow-hidden border-2 border-paper-border">
+                <div class="absolute -right-12 -top-12 opacity-5 pointer-events-none">
+                    <i class="fa-solid fa-compass-drafting text-[240px] text-walnut"></i>
+                </div>
+
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-teal/10 text-teal font-mono text-xs tracking-wider uppercase mb-4 border border-teal/20">
+                        <i class="fa-solid fa-shield-halved"></i> Scholastic Peer Collaboration Engine
+                    </div>
+
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-walnut-dark leading-tight">
+                        Study Together. <br><span class="italic text-teal font-normal">Perform Alone.</span>
+                    </h1>
+
+                    <p class="mt-4 text-walnut/80 text-base sm:text-lg max-w-2xl leading-relaxed">
+                        Step into a quiet, structured environment built for deliberate learning. Practice peer-to-peer timed mock sprints, exchange rigorous solutions, and quantify your problem-solving endurance.
+                    </p>
+                </div>
+
+                <!-- Hero Actions & Badges -->
+                <div class="mt-8 pt-6 border-t border-paper-border flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button onclick="openModal('Peer Matchmaker', 'Searching for active peers in algorithms and architecture...')" class="bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider px-6 py-3 rounded flex items-center gap-2 shadow transition-all">
+                            <i class="fa-solid fa-hourglass-start text-brass-light"></i> Join a Sprint
+                        </button>
+                        <a href="#leaderboard" class="bg-paper-light hover:bg-paper-dark text-walnut-dark border border-paper-border font-mono text-xs uppercase tracking-wider px-5 py-3 rounded flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-scroll text-teal"></i> Leaderboard
+                        </a>
+                        <button onclick="scrollToSection('dailyChallenge')" class="bg-brass/10 hover:bg-brass/20 text-brass-muted border border-brass/30 font-mono text-xs uppercase tracking-wider px-5 py-3 rounded flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-fire text-brass"></i> Daily Sprint
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs font-mono text-walnut/70 bg-paper-dark/50 px-3 py-1.5 rounded">
+                        <i class="fa-solid fa-circle-check text-teal"></i> 1,240 Sprints Completed Today
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: CURRENT USER RANK & LIBRARY PASS (4 Cols) -->
+            <div class="lg:col-span-4 dark-card p-6 rounded-lg flex flex-col justify-between border-2 border-brass-muted/40 relative shadow-xl">
+                <!-- Library Seal Badge Header -->
+                <div class="flex items-start justify-between border-b border-walnut-light pb-4">
+                    <div class="flex items-center gap-3">
+                        <div id="userInitials" class="w-12 h-12 rounded-full bg-paper-light text-walnut-dark flex items-center justify-center font-serif font-bold text-xl border-2 border-brass shrink-0">--</div>
+                        <div class="min-w-0">
+                            <a href="Dashboard" class="block">
+                                <h3 id="firstName" class="font-serif text-lg font-bold text-paper-light truncate">Loading...</h3>
+                            </a>
+                            <div class="flex items-center gap-2 mt-1">
+                                <i class="fa-solid fa-fingerprint text-brass-light text-[10px]"></i>
+                                <h4 id="ID" class="font-mono text-[10px] text-brass-light uppercase tracking-wider truncate" title="User ID">Loading...</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 shrink-0 ml-3">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="font-mono text-[9px] text-paper-dark uppercase">Online</span>
+                    </div>
+                </div>
+
+                <!-- User Quick Stats & Ranks -->
+                <div class="my-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-walnut-dark p-3 rounded border border-walnut-light">
+                            <span class="font-mono text-[10px] text-paper-dark/60 uppercase block">Global Rank</span>
+                            <span class="font-mono text-xl font-bold text-brass-light">#14 <span class="text-xs text-emerald-400 font-normal">▲ 2</span></span>
+                        </div>
+                        <div class="bg-walnut-dark p-3 rounded border border-walnut-light">
+                            <span class="font-mono text-[10px] text-paper-dark/60 uppercase block">Campus Rank</span>
+                            <span class="font-mono text-xl font-bold text-paper-light">#2 <span class="text-xs text-paper-dark/60 font-normal">(Oxford)</span></span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-paper-dark">Level 18 — Archival Scholar</span>
+                            <span class="text-brass-light font-bold">4,850 / 5,000 XP</span>
+                        </div>
+                        <div class="w-full bg-walnut-dark h-2.5 rounded-full overflow-hidden border border-walnut-light">
+                            <div class="bg-gradient-to-r from-brass-muted to-brass-light h-full rounded-full" style="width: 97%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-walnut-dark p-3 rounded border border-walnut-light flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-amber-500 text-lg"></i>
+                            <div>
+                                <span class="font-serif font-bold text-sm text-paper-light block leading-none">14 Days Streak</span>
+                                <span class="font-mono text-[10px] text-paper-dark/60">Study habit active</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-1 font-mono text-[10px]">
+                            <span class="w-5 h-5 rounded bg-emerald-900/60 text-emerald-400 flex items-center justify-center border border-emerald-700/50">M</span>
+                            <span class="w-5 h-5 rounded bg-emerald-900/60 text-emerald-400 flex items-center justify-center border border-emerald-700/50">T</span>
+                            <span class="w-5 h-5 rounded bg-emerald-900/60 text-emerald-400 flex items-center justify-center border border-emerald-700/50">W</span>
+                            <span class="w-5 h-5 rounded bg-emerald-900/60 text-emerald-400 flex items-center justify-center border border-emerald-700/50">T</span>
+                            <span class="w-5 h-5 rounded bg-brass text-walnut-dark font-bold flex items-center justify-center">F</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-walnut-light flex items-center justify-between font-mono text-[11px] text-paper-dark/70">
+                    <span><i class="fa-solid fa-circle-dot text-emerald-400"></i> Accuracy: 94.2%</span>
+                    <span>32 Sprints Done</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4 & 8: ACTIVE SPRINT & DAILY CHALLENGE ROW -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- SECTION 4: DAILY CHALLENGE CARD -->
+            <div id="dailyChallenge" class="library-card p-6 rounded-lg flex flex-col justify-between relative overflow-hidden border-2 border-brass/40">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-mono text-xs font-bold text-brass-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-day text-brass"></i> Today's Archival Task
+                    </span>
+                    <span class="bg-brass/10 text-brass-muted font-mono text-xs px-2.5 py-1 rounded border border-brass/20">
+                        +250 XP Reward
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-2xl font-bold text-walnut-dark">DSA: Graph Traversal & Dijkstra Optimization</h3>
+                    <p class="text-xs font-mono text-walnut/70 mt-1">Focus: Min-Priority Queue, Time Complexity & Edge Relaxation edge cases.</p>
+                </div>
+
+                <div class="my-6 p-4 bg-paper-dark/50 rounded border border-paper-border flex items-center justify-between">
+                    <div>
+                        <span class="font-mono text-[10px] text-walnut/60 uppercase block">Sprint Window Remaining</span>
+                        <div id="dailyTimer" class="font-mono text-2xl font-bold text-teal">04 : 12 : 39</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-mono text-[10px] text-walnut/60 uppercase block">Difficulty</span>
+                        <span class="inline-block px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-mono text-xs font-semibold">Intermediate</span>
+                    </div>
+                </div>
+
+                <button onclick="openModal('Daily Challenge Sprint', 'Initializing Dijkstra test environment... Pairing with peer observer.')" class="w-full bg-teal hover:bg-teal-light text-paper-light font-mono text-xs uppercase tracking-wider py-3 rounded font-semibold transition-colors flex items-center justify-center gap-2 shadow">
+                    <i class="fa-solid fa-play"></i> Start Challenge Now
+                </button>
+            </div>
+
+            <!-- SECTION 8: CONTINUE LEARNING / ACTIVE SPRINT CARD -->
+            <div class="library-card p-6 rounded-lg flex flex-col justify-between border-2 border-paper-border">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-mono text-xs font-bold text-teal uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-rotate-right"></i> Active Study Track
+                    </span>
+                    <span class="font-mono text-xs text-walnut/60">Module 2 of 5</span>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-2xl font-bold text-walnut-dark">C++ Concurrency & Memory Models</h3>
+                    <p class="text-xs font-mono text-walnut/70 mt-1">Next Sprint: std::atomic operations and acquire-release semantics.</p>
+                </div>
+
+                <div class="my-6 space-y-2">
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-walnut/70">Track Completion</span>
+                        <span class="font-bold text-walnut-dark">40%</span>
+                    </div>
+                    <div class="w-full bg-paper-dark h-2.5 rounded-full overflow-hidden border border-paper-border">
+                        <div class="bg-teal h-full rounded-full" style="width: 40%;"></div>
+                    </div>
+                </div>
+
+                <button onclick="openModal('Resume Track', 'Loading C++ Concurrency module sprint 3...')" class="w-full bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider py-3 rounded font-semibold transition-colors flex items-center justify-center gap-2 shadow">
+                    <i class="fa-solid fa-rotate-right"></i> Resume Active Sprint
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2 & 3: LEADERBOARD PREVIEWS (GLOBAL & LOCAL) -->
+        <section id="leaderboard" class="library-card p-6 sm:p-8 rounded-lg border-2 border-paper-border">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-paper-border">
+                <div>
+                    <div class="font-mono text-xs text-brass-muted uppercase tracking-wider mb-1">Scholar Roll Call</div>
+                    <h2 class="font-serif text-3xl font-bold text-walnut-dark">Hall of High Performers</h2>
+                </div>
+
+                <!-- Tabs to switch between Global and Local -->
+                <div class="flex bg-paper-dark/70 p-1 rounded border border-paper-border font-mono text-xs">
+                    <button id="btnTabGlobal" onclick="switchLeaderboard('global')" class="px-4 py-2 rounded bg-walnut text-paper-light font-semibold shadow transition-all">
+                        <i class="fa-solid fa-globe mr-1"></i> Global Rank
+                    </button>
+                    <button id="btnTabLocal" onclick="switchLeaderboard('local')" class="px-4 py-2 rounded text-walnut-dark hover:text-walnut font-semibold transition-all">
+                        <i class="fa-solid fa-university mr-1"></i> Local Campus
+                    </button>
+                </div>
+            </div>
+
+            <!-- Leaderboard Table Container -->
+            <div class="mt-6 overflow-x-auto">
+                <table class="w-full text-left font-mono text-xs">
+                    <thead>
+                        <tr class="border-b border-paper-border text-walnut/60 uppercase tracking-wider text-[11px]">
+                            <th class="py-3 px-4">Rank</th>
+                            <th class="py-3 px-4">Scholar / Peer</th>
+                            <th class="py-3 px-4">Institution</th>
+                            <th class="py-3 px-4">Sprint Score</th>
+                            <th class="py-3 px-4">Streak</th>
+                            <th class="py-3 px-4 text-right">Title Badge</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardRows" class="divide-y divide-paper-border/60">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 9 & 10: RECOMMENDED CONTENT & TRENDING PROBLEMS -->
+        <section id="catalog" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- SECTION 9: RECOMMENDED CONTENT (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="font-mono text-xs text-teal uppercase tracking-wider block">Curated Syllabi</span>
+                        <h2 class="font-serif text-2xl font-bold text-walnut-dark">Recommended Sprint Tracks</h2>
+                    </div>
+                    <!-- Filter Buttons -->
+                    <div class="flex gap-1 bg-paper-dark/50 p-1 rounded border border-paper-border font-mono text-[11px]">
+                        <button onclick="filterCatalog('all')" class="px-2.5 py-1 rounded bg-walnut text-paper-light">All</button>
+                        <button onclick="filterCatalog('STEM')" class="px-2.5 py-1 rounded hover:bg-paper-dark text-walnut-dark">STEM</button>
+                        <button onclick="filterCatalog('Systems')" class="px-2.5 py-1 rounded hover:bg-paper-dark text-walnut-dark">Systems</button>
+                    </div>
+                </div>
+
+                <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Cards populated via JS -->
+                </div>
+            </div>
+
+            <!-- SECTION 10: TRENDING PROBLEMS (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div>
+                    <span class="font-mono text-xs text-brass-muted uppercase tracking-wider block">Peer Reviewed</span>
+                    <h2 class="font-serif text-2xl font-bold text-walnut-dark">Trending Exam Problems</h2>
+                </div>
+
+                <div class="library-card p-5 rounded-lg border-2 border-paper-border space-y-4">
+                    <!-- Item 1 -->
+                    <div class="p-3 bg-paper-light rounded border border-paper-border hover:border-brass transition-all cursor-pointer" onclick="openModal('Practice Problem #304', 'Opening Lock-Free Queue implementations...')">
+                        <div class="flex items-center justify-between font-mono text-[10px] text-walnut/60 mb-1">
+                            <span class="text-teal font-bold">#304 — CONCURRENCY</span>
+                            <span>Solve Rate: 42%</span>
+                        </div>
+                        <h4 class="font-serif font-bold text-base text-walnut-dark">Lock-Free Queue using CAS Instructions</h4>
+                        <div class="flex items-center justify-between mt-3 font-mono text-[11px]">
+                            <span class="text-walnut/60"><i class="fa-regular fa-comment"></i> 88 Peer Notes</span>
+                            <span class="text-brass-muted font-semibold hover:underline">Practice <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="p-3 bg-paper-light rounded border border-paper-border hover:border-brass transition-all cursor-pointer" onclick="openModal('Practice Problem #118', 'Opening Distributed Consensus...')">
+                        <div class="flex items-center justify-between font-mono text-[10px] text-walnut/60 mb-1">
+                            <span class="text-teal font-bold">#118 — ARCHITECTURE</span>
+                            <span>Solve Rate: 58%</span>
+                        </div>
+                        <h4 class="font-serif font-bold text-base text-walnut-dark">Raft Consensus: Leader Election Partitioning</h4>
+                        <div class="flex items-center justify-between mt-3 font-mono text-[11px]">
+                            <span class="text-walnut/60"><i class="fa-regular fa-comment"></i> 142 Peer Notes</span>
+                            <span class="text-brass-muted font-semibold hover:underline">Practice <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="p-3 bg-paper-light rounded border border-paper-border hover:border-brass transition-all cursor-pointer" onclick="openModal('Practice Problem #209', 'Opening Dynamic Programming...')">
+                        <div class="flex items-center justify-between font-mono text-[10px] text-walnut/60 mb-1">
+                            <span class="text-teal font-bold">#209 — ALGORITHMS</span>
+                            <span>Solve Rate: 31%</span>
+                        </div>
+                        <h4 class="font-serif font-bold text-base text-walnut-dark">Optimal Matrix Chain Multiplication</h4>
+                        <div class="flex items-center justify-between mt-3 font-mono text-[11px]">
+                            <span class="text-walnut/60"><i class="fa-regular fa-comment"></i> 64 Peer Notes</span>
+                            <span class="text-brass-muted font-semibold hover:underline">Practice <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 11: UPCOMING CONTESTS SCHEDULE -->
+        <section class="library-card p-6 sm:p-8 rounded-lg border-2 border-paper-border">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-paper-border gap-4">
+                <div>
+                    <span class="font-mono text-xs text-brass-muted uppercase tracking-wider block">Official Timed Meets</span>
+                    <h2 class="font-serif text-3xl font-bold text-walnut-dark">Upcoming Peer Contests</h2>
+                </div>
+                <button onclick="showToast('Reminder Set', 'You will receive an archival alert 15 minutes prior to the start.')" class="font-mono text-xs bg-paper-dark hover:bg-paper-border text-walnut-dark px-4 py-2 rounded border border-paper-border">
+                    <i class="fa-regular fa-bell"></i> Set All Reminders
+                </button>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Contest 1 -->
+                <div class="bg-paper-light p-5 rounded border border-paper-border flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex justify-between font-mono text-[10px] text-brass-muted mb-2">
+                            <span>NATIONAL SPRINT #42</span>
+                            <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">60 MINS</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-walnut-dark">Algorithms & Graph Sprint</h3>
+                        <p class="font-mono text-xs text-walnut/70 mt-1">Competitive 4-problem set under synchronized clock.</p>
+                    </div>
+                    <div class="pt-4 border-t border-paper-border flex items-center justify-between font-mono text-xs">
+                        <div>
+                            <span class="text-[10px] text-walnut/60 block">STARTS IN</span>
+                            <span class="font-bold text-teal">02h 45m</span>
+                        </div>
+                        <button onclick="toggleRegister(this)" class="bg-walnut text-paper-light hover:bg-walnut-light px-3 py-1.5 rounded transition-all">
+                            Register (312 Registered)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contest 2 -->
+                <div class="bg-paper-light p-5 rounded border border-paper-border flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex justify-between font-mono text-[10px] text-brass-muted mb-2">
+                            <span>IVY LEAGUE CUP</span>
+                            <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">90 MINS</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-walnut-dark">Systems & Kernel Internals</h3>
+                        <p class="font-mono text-xs text-walnut/70 mt-1">Virtual memory management & lock implementation sprint.</p>
+                    </div>
+                    <div class="pt-4 border-t border-paper-border flex items-center justify-between font-mono text-xs">
+                        <div>
+                            <span class="text-[10px] text-walnut/60 block">STARTS IN</span>
+                            <span class="font-bold text-teal">18h 10m</span>
+                        </div>
+                        <button onclick="toggleRegister(this)" class="bg-walnut text-paper-light hover:bg-walnut-light px-3 py-1.5 rounded transition-all">
+                            Register (184 Registered)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contest 3 -->
+                <div class="bg-paper-light p-5 rounded border border-paper-border flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex justify-between font-mono text-[10px] text-brass-muted mb-2">
+                            <span>GLOBAL OPEN</span>
+                            <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">45 MINS</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-walnut-dark">Speed Mathematical Logic</h3>
+                        <p class="font-mono text-xs text-walnut/70 mt-1">Combinatorics, modular arithmetic, and probability proofs.</p>
+                    </div>
+                    <div class="pt-4 border-t border-paper-border flex items-center justify-between font-mono text-xs">
+                        <div>
+                            <span class="text-[10px] text-walnut/60 block">STARTS IN</span>
+                            <span class="font-bold text-teal">1d 04h</span>
+                        </div>
+                        <button onclick="toggleRegister(this)" class="bg-walnut text-paper-light hover:bg-walnut-light px-3 py-1.5 rounded transition-all">
+                            Register (520 Registered)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 12: PLATFORM STATISTICS LEDGER -->
+        <section class="dark-card p-8 rounded-lg border-2 border-brass-muted/30">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <span class="font-mono text-xs text-brass-light uppercase tracking-widest block">Official Archives Ledger</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-paper-light mt-1">Quantified Peer Learning</h2>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center font-mono">
+                <div class="p-4 bg-walnut-dark rounded border border-walnut-light">
+                    <span class="text-3xl sm:text-4xl font-bold text-brass-light block" id="statSprints">128,400</span>
+                    <span class="text-xs text-paper-dark/70 uppercase tracking-wider block mt-2">Sprints Conducted</span>
+                </div>
+                <div class="p-4 bg-walnut-dark rounded border border-walnut-light">
+                    <span class="text-3xl sm:text-4xl font-bold text-paper-light block" id="statReviews">98,200</span>
+                    <span class="text-xs text-paper-dark/70 uppercase tracking-wider block mt-2">Peer Reviews Logged</span>
+                </div>
+                <div class="p-4 bg-walnut-dark rounded border border-walnut-light">
+                    <span class="text-3xl sm:text-4xl font-bold text-brass-light block" id="statInstitutions">214</span>
+                    <span class="text-xs text-paper-dark/70 uppercase tracking-wider block mt-2">Partner Universities</span>
+                </div>
+                <div class="p-4 bg-walnut-dark rounded border border-walnut-light">
+                    <span class="text-3xl sm:text-4xl font-bold text-emerald-400 block">97.4%</span>
+                    <span class="text-xs text-paper-dark/70 uppercase tracking-wider block mt-2">Review Accuracy</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 13 & 14: COMMUNITY DISCUSSIONS & AI ASSISTANT -->
+        <section id="discussions" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- SECTION 13: COMMUNITY MARGINALIA DISCUSSIONS (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div>
+                    <span class="font-mono text-xs text-teal uppercase tracking-wider block">Student Marginalia</span>
+                    <h2 class="font-serif text-2xl font-bold text-walnut-dark">Featured Archival Annotations</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Marginalia Note 1 -->
+                    <div class="library-card p-5 rounded-lg border border-paper-border relative">
+                        <div class="flex items-center justify-between font-mono text-xs text-walnut/60 mb-2">
+                            <span class="font-bold text-walnut-dark"><i class="fa-solid fa-user-graduate text-brass"></i> Elena Rostova (Cambridge)</span>
+                            <span>2 hours ago</span>
+                        </div>
+                        <p class="font-serif italic text-lg text-walnut-dark">
+                            "When analyzing Dijkstra with negative edge weights, remember it's not just slow—it can produce outright incorrect shortest path trees. Use Bellman-Ford or Johnson's algorithm instead."
+                        </p>
+                        <div class="mt-4 pt-3 border-t border-paper-border flex items-center justify-between font-mono text-xs">
+                            <span class="text-teal font-semibold">Ref: Sprint #104 (Graph Theory)</span>
+                            <button onclick="upvoteNote(this)" class="bg-paper-dark px-2.5 py-1 rounded text-walnut hover:text-brass flex items-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-thumbs-up"></i> <span>48</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Marginalia Note 2 -->
+                    <div class="library-card p-5 rounded-lg border border-paper-border relative">
+                        <div class="flex items-center justify-between font-mono text-xs text-walnut/60 mb-2">
+                            <span class="font-bold text-walnut-dark"><i class="fa-solid fa-user-graduate text-brass"></i> Marcus Vance (MIT)</span>
+                            <span>Yesterday</span>
+                        </div>
+                        <p class="font-serif italic text-lg text-walnut-dark">
+                            "Cache locality during matrix multiplication gives a 10x speedup over standard Naive triple loops. Transposing Matrix B prior to multiplication aligns memory access with CPU lines."
+                        </p>
+                        <div class="mt-4 pt-3 border-t border-paper-border flex items-center justify-between font-mono text-xs">
+                            <span class="text-teal font-semibold">Ref: Sprint #88 (Computer Arch)</span>
+                            <button onclick="upvoteNote(this)" class="bg-paper-dark px-2.5 py-1 rounded text-walnut hover:text-brass flex items-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-thumbs-up"></i> <span>92</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 14: AI ASSISTANT PREVIEW ("THE CURATOR") (5 Cols) -->
+            <div id="curator" class="lg:col-span-5 library-card p-6 rounded-lg border-2 border-teal/30 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded bg-teal text-paper-light flex items-center justify-center font-serif font-bold text-lg">
+                            <i class="fa-solid fa-feather-pointed"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-xl font-bold text-walnut-dark">The Curator AI</h3>
+                            <span class="font-mono text-[10px] text-teal block uppercase">Archival Assistant & Hint Engine</span>
+                        </div>
+                    </div>
+
+                    <p class="font-sans text-xs text-walnut/80 mb-4">
+                        Stuck on a concept during your peer review? Ask the Curator for concise proofs, hint hints, or complexity breakdowns.
+                    </p>
+
+                    <!-- Interactive Query Console -->
+                    <div class="bg-paper-dark/60 p-3 rounded border border-paper-border space-y-3 font-mono text-xs">
+                        <div class="text-walnut/70">
+                            <strong>Sample Query:</strong> "Explain the difference between Mutex and Semaphore in 2 sentences."
+                        </div>
+                        <div id="aiResponseBox" class="p-2.5 bg-paper-light rounded border border-paper-border text-walnut-dark italic font-serif text-sm">
+                            "A Mutex is an ownership lock allowing only one thread to access a resource at a time. A Semaphore is a signaling counter permitting up to N concurrent threads."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input prompt form -->
+                <form onsubmit="handleAiPrompt(event)" class="mt-4 flex gap-2">
+                    <input type="text" id="aiInput" placeholder="Ask Curator a question..." required class="flex-1 bg-paper-light border border-paper-border rounded px-3 py-2 font-mono text-xs text-walnut-dark focus:outline-none focus:border-teal">
+                    <button type="submit" class="bg-teal hover:bg-teal-light text-paper-light px-4 py-2 rounded font-mono text-xs font-semibold transition-colors">
+                        Ask
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECTION 15: PREMIUM MEMBERSHIP BANNER ("SCHOLAR CIRCLE") -->
+        <section class="dark-card p-8 sm:p-10 rounded-lg border-2 border-brass relative overflow-hidden shadow-2xl">
+            <div class="absolute right-0 top-0 w-96 h-96 bg-brass/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brass/20 text-brass-light font-mono text-xs uppercase tracking-widest border border-brass/30">
+                        <i class="fa-solid fa-crown"></i> Exclusive Invitation
+                    </div>
+                    
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-paper-light">
+                        Elevate to the <span class="text-brass-light italic">Scholar Circle</span> Patron Status
+                    </h2>
+
+                    <p class="font-sans text-sm text-paper-dark/80 max-w-2xl leading-relaxed">
+                        Gain unrestricted access to private institutional archives, 1-on-1 code review breakdowns with senior scholars, unlimited mock sprint slots, and priority peer matching.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 font-mono text-xs text-paper-dark pt-2">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brass-light"></i> Unlimited Peer Sprints</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brass-light"></i> Archive Video Transcripts</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brass-light"></i> Official Certification Seals</span>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 flex flex-col items-center justify-center text-center p-6 bg-walnut-dark rounded border border-walnut-light">
+                    <div class="wax-seal w-16 h-16 rounded-full flex items-center justify-center text-paper font-serif font-bold text-2xl shadow-xl mb-3">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <span class="font-serif text-2xl font-bold text-paper-light">$12 <span class="text-xs font-mono font-normal text-paper-dark/60">/ month</span></span>
+                    <button onclick="openModal('Scholar Pass Upgrade', 'Redirecting to secure scholastic patron checkout portal...')" class="mt-4 w-full bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-bold uppercase tracking-wider py-3 rounded transition-all shadow">
+                        Claim Scholar Pass
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-walnut-dark border-t border-walnut-light text-paper-dark py-10 mt-16 font-mono text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full border border-brass flex items-center justify-center text-brass-light font-serif font-bold">
+                    A
+                </div>
+                <div>
+                    <span class="font-serif font-bold text-sm text-paper-light block">THE MINI PROJECT PLATFORM</span>
+                    <span class="text-[10px] text-paper-dark/50 block">Peer-to-Peer Mock Sprint System</span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-[11px] text-paper-dark/70">
+                <a href="#" class="hover:text-brass-light transition-colors">Academic Integrity Policy</a>
+                <a href="#" class="hover:text-brass-light transition-colors">Sprint Guidelines</a>
+                <a href="#" class="hover:text-brass-light transition-colors">University Partnerships</a>
+                <a href="#" class="hover:text-brass-light transition-colors">System Status</a>
+            </div>
+
+            <div class="text-[10px] text-paper-dark/50">
+                © 2026 The MINI PROJECT. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- GENERIC INTERACTIVE MODAL DIALOG -->
+    <div id="appModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="library-card max-w-md w-full p-6 rounded-lg shadow-2xl border-2 border-brass relative transform transition-all">
+            <div class="flex items-center justify-between pb-3 border-b border-paper-border mb-4">
+                <h3 id="modalTitle" class="font-serif text-xl font-bold text-walnut-dark">Archival Action</h3>
+                <button onclick="closeModal()" class="text-walnut/60 hover:text-walnut"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p id="modalBody" class="font-sans text-xs text-walnut/80 leading-relaxed mb-6">
+                Executing request...
+            </p>
+            <div class="flex justify-end gap-3 font-mono text-xs">
+                <button onclick="closeModal()" class="px-4 py-2 bg-paper-dark hover:bg-paper-border text-walnut-dark rounded">Close</button>
+                <button onclick="confirmModalAction()" class="px-4 py-2 bg-walnut hover:bg-walnut-light text-paper-light rounded font-bold">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script src="Front.js"></script>
+</body>
+</html>

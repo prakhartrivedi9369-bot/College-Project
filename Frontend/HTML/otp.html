@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Verify your email — PeerSprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="otp.css">
+</head>
+<body>
+<div class="page-shell">
+<header class="topbar"><a class="brand" href="#"><span class="brand-mark">P</span><span>PeerSprint</span></a><p>Need help? <a href="#">Contact support</a></p></header>
+<main class="layout">
+<section class="intro"><span class="eyebrow">ONE LAST STEP</span><h1>Verify your<br><em>identity.</em></h1>
+<p class="intro-text">We've sent a six-digit verification code to your email. Enter it below to finish setting up your PeerSprint account.</p>
+<div class="note"><span>✓</span><div><strong>Why verify?</strong><p>Email verification keeps your account secure and makes sure your sprint invitations reach the right person.</p></div></div>
+<div class="quote"><b>“</b><p>Small steps. Real practice. Better performance.</p></div>
+</section>
+<section class="panel"><div class="card">
+<div class="mail">✉</div><span class="kicker">EMAIL VERIFICATION</span><h2>Enter your code</h2>
+<p class="desc">We sent a verification code to <strong id="emailDisplay">you@example.com</strong></p>
+<form id="otpForm" novalidate>
+<div class="otp" id="otpInputs">
+<input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 1" autocomplete="one-time-code">
+<input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 2"><input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+<span>—</span><input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 4"><input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 5"><input class="otp-input" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+</div>
+<small class="error" id="otpError"></small>
+<button class="verify" type="submit">Verify email <span>→</span></button>
+<div class="resend"><p>Didn't receive the code?</p><button id="resendBtn" type="button" disabled>Resend code</button><span id="timer">00:30</span></div>
+<button class="change" id="changeEmail" type="button">← Use a different email</button>
+</form>
+<div class="success" id="successState"><div class="success-icon">✓</div><h2>Email verified.</h2><p>Your PeerSprint account is ready. Let's get your first sprint started.</p><button class="verify" id="continueBtn" type="button">Continue to PeerSprint <span>→</span></button></div>
+</div></section>
+</main></div>
+<script src="otp.js"></script>
+</body></html>

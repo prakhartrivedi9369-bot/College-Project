@@ -1,0 +1,1027 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>THE ARCHIVE — Scholar Profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="Dashboard.css">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="nav-wrap">
+
+        <a class="brand" href="#">
+            <span class="brand-mark">
+                <i class="fa-solid fa-book-bookmark"></i>
+            </span>
+
+            <span>
+                <b>MINI PROJECT</b>
+                <small>PEER SPRINT REPOSITORY</small>
+            </span>
+        </a>
+
+        <nav>
+            <a href="#">Sprints</a>
+            <a href="#">Rankings</a>
+            <a href="#">Catalog</a>
+            <a href="#">Marginalia</a>
+            <a href="#">AI Curator</a>
+        </nav>
+
+        <div class="nav-actions">
+
+            <button class="nav-btn"
+                    id="themeBtn"
+                    title="Toggle theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <button class="nav-user">
+
+                <span class="mini-avatar" id="navAvatarInitials">
+                    --
+                </span>
+
+                <span>MINI PROJECT</span>
+
+                <i class="fa-solid fa-chevron-down"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <div class="crumb">
+        <span>MINI PROJECT</span>
+        <i class="fa-solid fa-angle-right"></i>
+
+        <span>SCHOLARS</span>
+        <i class="fa-solid fa-angle-right"></i>
+
+        <b>PROFILE</b>
+    </div>
+
+
+    <!-- PROFILE HERO -->
+
+    <section class="profile-hero card">
+
+        <div class="profile-main">
+
+            <div class="avatar-wrap">
+
+                <div class="avatar" id="avatar">
+
+                    <span id="profileAvatarInitials">
+                        --
+                    </span>
+
+                    <img id="avatarImage"
+                         alt="Profile photo">
+
+                </div>
+
+                <label class="photo-edit"
+                       for="photoInput"
+                       title="Upload profile photo">
+
+                    <i class="fa-solid fa-camera"></i>
+
+                </label>
+
+                <input id="photoInput"
+                       type="file"
+                       accept="image/*"
+                       hidden>
+
+            </div>
+
+
+            <div class="identity">
+
+                <div class="eyebrow">
+
+                    <i class="fa-solid fa-stamp"></i>
+
+                    SCHOLAR PROFILE
+
+                    <span class="status-dot"></span>
+
+                    AVAILABLE FOR PEER SPRINTS
+
+                </div>
+
+
+                <!-- USER FIRST NAME WILL APPEAR HERE -->
+
+                <h1 id="userFullName">
+                    Loading...
+                </h1>
+
+
+                <div class="handle">
+
+                    <h4 id="userHandle">
+                    @Loading...
+                    </h4>
+
+
+                    <button id="copyHandle"
+                            class="icon-btn"
+                            title="Copy firstName">
+
+                        <i class="fa-regular fa-copy"></i>
+
+                    </button>
+
+                </div>
+
+
+                <p id="bio">
+                    Systems learner, competitive problem solver,
+                    and peer reviewer. Building consistency one
+                    sprint at a time.
+                </p>
+
+
+                <div class="identity-meta">
+
+                    <span>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Bareilly, India
+                    </span>
+
+                    <span>
+                        <i class="fa-regular fa-calendar"></i>
+                        Joined September 2026
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        Student
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-actions">
+
+                <button class="primary"
+                        id="followBtn">
+
+                    <i class="fa-solid fa-user-plus"></i>
+                    Follow
+
+                </button>
+
+
+                <button class="secondary"
+                        id="editBtn">
+
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Profile
+
+                </button>
+
+
+                <button class="square"
+                        id="shareBtn"
+                        title="Share profile">
+
+                    <i class="fa-solid fa-share-nodes"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE STATS -->
+
+        <div class="profile-stats">
+
+            <div>
+                <strong id="followers">0</strong>
+                <span>Followers</span>
+            </div>
+
+            <div>
+                <strong id="following">0</strong>
+                <span>Following</span>
+            </div>
+
+            <div>
+                <strong id="sprints">0</strong>
+                <span>Sprints</span>
+            </div>
+
+            <div>
+                <strong id="questions">0</strong>
+                <span>Questions</span>
+            </div>
+
+            <div>
+                <strong id="contests">0</strong>
+                <span>Contests</span>
+            </div>
+
+            <div>
+                <strong id="tournaments">0</strong>
+                <span>Tournaments</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ONBOARDING -->
+
+    <section class="onboarding card">
+
+        <div class="onboard-copy">
+
+            <span class="seal-small">
+                <i class="fa-solid fa-sparkles"></i>
+            </span>
+
+            <div>
+
+                <span class="eyebrow brass">
+                    YOUR ARCHIVE IS NEW
+                </span>
+
+                <h2>
+                    Begin your scholar record.
+                </h2>
+
+                <p>
+                    Complete your profile, add your first skill,
+                    and enter your first peer sprint. Your activity
+                    will gradually populate this page.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="completion">
+
+            <div class="completion-head">
+
+                <span>
+                    Profile completion
+                </span>
+
+                <b id="completionText">
+                    20%
+                </b>
+
+            </div>
+
+
+            <div class="progress">
+                <i id="completionBar"></i>
+            </div>
+
+
+            <div class="completion-actions">
+
+                <button class="link-btn"
+                        data-scroll="skills">
+                    Add skills
+                </button>
+
+                <button class="link-btn"
+                        data-scroll="activity">
+                    Start activity
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACTIVITY / PROGRESSION -->
+
+    <section class="grid-two">
+
+        <div class="card panel"
+             id="activity">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow teal">
+                        CONTRIBUTION LEDGER
+                    </span>
+
+                    <h2>
+                        Daily Activity
+                    </h2>
+
+                </div>
+
+                <div class="legend">
+
+                    <span>Less</span>
+
+                    <i class="l0"></i>
+                    <i class="l1"></i>
+                    <i class="l2"></i>
+                    <i class="l3"></i>
+                    <i class="l4"></i>
+
+                    <span>More</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="activity-summary">
+
+                <div>
+                    <strong id="activityTotal">
+                        0
+                    </strong>
+
+                    <span>
+                        contributions this year
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong id="currentStreak">
+                        0
+                    </strong>
+
+                    <span>
+                        day current streak
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong id="bestStreak">
+                        0
+                    </strong>
+
+                    <span>
+                        day best streak
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div id="heatmap"
+                 class="activity-chart">
+            </div>
+
+        </div>
+
+
+        <div class="card panel">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow teal">
+                        PERFORMANCE INDEX
+                    </span>
+
+                    <h2>
+                        Scholar Metrics
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="metrics">
+
+                <div class="metric-row">
+
+                    <span>
+                        <i class="fa-solid fa-bullseye"></i>
+                        Accuracy
+                    </span>
+
+                    <div class="metric-bar">
+                        <div class="metric-fill"
+                             id="accuracyBar"
+                             style="width: 0%">
+                        </div>
+                    </div>
+
+                    <strong id="accuracyPercent">0%</strong>
+
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span>
+                        <i class="fa-solid fa-star"></i>
+                        Peer Score
+                    </span>
+
+                    <div class="metric-bar">
+                        <div class="metric-fill"
+                             id="scoreBar"
+                             style="width: 0%">
+                        </div>
+                    </div>
+
+                    <strong id="scoreValue">0</strong>
+
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span>
+                        <i class="fa-solid fa-medal"></i>
+                        Global Rank
+                    </span>
+
+                    <div class="metric-rank">
+                        <strong id="globalRank">—</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Local Rank
+                    </span>
+
+                    <div class="metric-rank">
+                        <strong id="localRank">—</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACHIEVEMENTS -->
+
+    <section class="achievements-grid">
+
+        <div class="card achievement">
+
+            <div class="achievement-content">
+
+                <span class="achievement-icon">
+                    <i class="fa-solid fa-fire"></i>
+                </span>
+
+                <b>Week Warrior</b>
+                <span>7 day streak</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card achievement">
+
+            <div class="achievement-content">
+
+                <span class="achievement-icon">
+                    <i class="fa-solid fa-trophy"></i>
+                </span>
+
+                <b>Rising Scholar</b>
+                <span>Top 50%</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card achievement">
+
+            <div class="achievement-content">
+
+                <span class="achievement-icon">
+                    <i class="fa-solid fa-crown"></i>
+                </span>
+
+                <b>Top Scholar</b>
+                <span>Reach top 10%</span>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- SKILLS -->
+
+    <section class="card panel">
+
+        <div class="section-head">
+
+            <div>
+
+                <span class="eyebrow teal">
+                    CAPABILITY INDEX
+                </span>
+
+                <h2>
+                    Skills
+                </h2>
+
+            </div>
+
+            <button class="primary small"
+                    id="addSkillBtn">
+
+                <i class="fa-solid fa-plus"></i>
+                Add Skill
+
+            </button>
+
+        </div>
+
+
+        <div id="skillsList">
+
+        </div>
+
+    </section>
+
+
+    <!-- SOCIAL GRAPH -->
+
+    <section class="grid-two">
+
+        <div class="card panel">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow teal">
+                        SOCIAL GRAPH
+                    </span>
+
+                    <h2>
+                        Peers
+                    </h2>
+
+                </div>
+
+                <button class="secondary small">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Find Peers
+
+                </button>
+
+            </div>
+
+
+            <div class="peers-empty">
+
+                <div class="empty-icon">
+                    <i class="fa-solid fa-people-group"></i>
+                </div>
+
+                <h3>
+                    No peers added yet
+                </h3>
+
+                <p>
+                    Connect with other scholars to
+                    compare progress and collaborate.
+                </p>
+
+                <button class="link-btn">
+                    Browse peer directory
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="card panel">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="eyebrow teal">
+                        SOCIAL GRAPH
+                    </span>
+
+                    <h2>
+                        Community
+                    </h2>
+
+                </div>
+
+                <button class="secondary small">
+
+                    <i class="fa-solid fa-pen"></i>
+                    Create Update
+
+                </button>
+
+            </div>
+
+
+            <div class="community-empty">
+
+                <div class="empty-icon">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+
+                <h3>
+                    No community activity
+                </h3>
+
+                <p>
+                    Posts, comments, replies, peer notes,
+                    shared solutions, and upvotes will collect here.
+                </p>
+
+                <div class="community-actions">
+
+                    <button class="link-btn">
+                        Browse community
+                    </button>
+
+                    <button class="link-btn">
+                        Find peers
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONNECTED ACCOUNTS -->
+
+    <section class="card panel">
+
+        <div class="section-head">
+
+            <div>
+
+                <span class="eyebrow teal">
+                    CONNECTED IDENTITY
+                </span>
+
+                <h2>
+                    Accounts & Links
+                </h2>
+
+                <p>
+                    Connect your developer and professional
+                    identities to strengthen your scholar profile.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="accounts">
+
+            <div class="account">
+
+                <span class="account-icon github">
+                    <i class="fa-brands fa-github"></i>
+                </span>
+
+                <div>
+                    <b>GitHub</b>
+                    <span>Not connected</span>
+                </div>
+
+                <button>
+                    Connect
+                </button>
+
+            </div>
+
+
+            <div class="account">
+
+                <span class="account-icon linkedin">
+                    <i class="fa-brands fa-linkedin"></i>
+                </span>
+
+                <div>
+                    <b>LinkedIn</b>
+                    <span>Not connected</span>
+                </div>
+
+                <button>
+                    Connect
+                </button>
+
+            </div>
+
+
+            <div class="account">
+
+                <span class="account-icon code">
+                    <i class="fa-solid fa-code"></i>
+                </span>
+
+                <div>
+                    <b>LeetCode</b>
+                    <span>Not connected</span>
+                </div>
+
+                <button>
+                    Connect
+                </button>
+
+            </div>
+
+
+            <div class="account">
+
+                <span class="account-icon codechef">
+                    <i class="fa-solid fa-terminal"></i>
+                </span>
+
+                <div>
+                    <b>CodeChef</b>
+                    <span>Not connected</span>
+                </div>
+
+                <button>
+                    Connect
+                </button>
+
+            </div>
+
+
+            <div class="account">
+
+                <span class="account-icon portfolio">
+                    <i class="fa-solid fa-globe"></i>
+                </span>
+
+                <div>
+                    <b>Portfolio</b>
+                    <span>Add personal website</span>
+                </div>
+
+                <button>
+                    Add
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MEMBERSHIP -->
+
+    <section class="card scholar-circle">
+
+        <div>
+
+            <span class="eyebrow brass">
+                SCHOLAR CIRCLE
+            </span>
+
+            <h2>
+                Your profile is the beginning, not the finish.
+            </h2>
+
+            <p>
+                Unlock deeper peer analytics, advanced performance
+                history, private sprint rooms, AI Curator limits,
+                and enhanced profile customization as the platform grows.
+            </p>
+
+        </div>
+
+
+        <button class="brass-btn">
+
+            Explore Membership
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div>
+        <b>THE ARCHIVE</b>
+        <span>Peer-to-Peer Mock Sprint System</span>
+    </div>
+
+    <div>
+        Academic Integrity · Sprint Guidelines · System Status
+    </div>
+
+    <div>
+        © 2026 The Archive Project
+    </div>
+
+</footer>
+
+
+<!-- EDIT PROFILE MODAL -->
+
+<div class="modal"
+     id="editModal">
+
+    <div class="modal-box">
+
+        <button class="modal-close"
+                data-close>
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+        <span class="eyebrow brass">
+            PROFILE RECORD
+        </span>
+
+        <h2>
+            Edit Scholar Profile
+        </h2>
+
+
+        <label>
+            Name
+            <input id="editName"
+                   type="text">
+        </label>
+
+
+        <label>
+            Username
+            <input id="editUsername"
+                   type="text">
+        </label>
+
+
+        <label>
+            Bio
+            <textarea id="editBio"
+                      rows="3"></textarea>
+        </label>
+
+
+        <div class="modal-actions">
+
+            <button class="secondary"
+                    data-close>
+                Cancel
+            </button>
+
+            <button class="primary"
+                    id="saveProfile">
+                Save changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SKILL MODAL -->
+
+<div class="modal"
+     id="skillModal">
+
+    <div class="modal-box">
+
+        <button class="modal-close"
+                data-close>
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+        <span class="eyebrow teal">
+            CAPABILITY INDEX
+        </span>
+
+        <h2>
+            Add a Skill
+        </h2>
+
+
+        <label>
+            Skill name
+
+            <input id="skillName"
+                   type="text"
+                   placeholder="e.g. C++, DSA, Networking">
+
+        </label>
+
+
+        <label>
+            Current level
+
+            <select id="skillLevel">
+
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+                <option>Expert</option>
+
+            </select>
+
+        </label>
+
+
+        <div class="modal-actions">
+
+            <button class="secondary"
+                    data-close>
+                Cancel
+            </button>
+
+            <button class="primary"
+                    id="saveSkill">
+                Add skill
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="toast"
+     id="toast">
+</div>
+
+
+<script src="Dashboard.js"></script>
+
+</body>
+
+</html>

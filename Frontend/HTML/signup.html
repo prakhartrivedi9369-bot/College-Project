@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Sprint — MINI PROJECT</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+
+<div class="page-shell">
+
+  <header class="topbar">
+
+    <a class="brand" href="#">
+      <span class="brand-mark">M</span>
+      <span>MINI PROJECT</span>
+    </a>
+
+    <p class="topbar-copy">
+      Already have an account?
+      <a href="login" id="loginLink">Sign in</a>
+    </p>
+
+  </header>
+
+  <main class="signup-layout">
+
+    <section class="intro-panel">
+
+      <span class="eyebrow">PEER-TO-PEER MOCK SPRINTS</span>
+
+      <h1>
+        Practice together.<br>
+        <em>Perform better.</em>
+      </h1>
+
+      <p class="intro-text">
+        Build realistic sprints, challenge your peers, and turn every session
+        into useful feedback.
+      </p>
+
+      <div class="mini-process">
+
+        <div class="process-item">
+          <span class="step-no">01</span>
+
+          <div>
+            <strong>Create or join</strong>
+            <p>Start a sprint or enter a Sprint ID.</p>
+          </div>
+        </div>
+
+        <div class="process-line"></div>
+
+        <div class="process-item">
+          <span class="step-no">02</span>
+
+          <div>
+            <strong>Challenge & solve</strong>
+            <p>Work through timed tasks with your peer.</p>
+          </div>
+        </div>
+
+        <div class="process-line"></div>
+
+        <div class="process-item">
+          <span class="step-no">03</span>
+
+          <div>
+            <strong>Review & improve</strong>
+            <p>Exchange feedback and track your progress.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="quote-card">
+        <span class="quote-mark">“</span>
+        <p>Don't just prepare for the interview. Practice performing.</p>
+      </div>
+
+    </section>
+
+    <section class="form-panel">
+
+      <div class="form-card">
+
+        <div class="form-heading">
+
+          <span class="form-kicker">WELCOME ABOARD</span>
+
+          <h2>Create your account</h2>
+
+          <p>
+            Set up your profile and get your first sprint underway.
+          </p>
+
+        </div>
+
+        <form id="signupForm" novalidate>
+
+          <div class="field-row">
+
+            <div class="field">
+
+              <label for="firstName">First name</label>
+
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Alex"
+                autocomplete="given-name"
+              >
+
+              <small class="error" id="firstNameError"></small>
+
+            </div>
+
+            <div class="field">
+
+              <label for="lastName">Last name</label>
+
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Morgan"
+                autocomplete="family-name"
+              >
+
+              <small class="error" id="lastNameError"></small>
+
+            </div>
+
+          </div>
+
+          <div class="field">
+
+            <label for="username">Username</label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">@</span>
+
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="alexmorgan"
+                autocomplete="username"
+              >
+
+            </div>
+
+            <small class="error" id="usernameError"></small>
+
+          </div>
+
+          <div class="field">
+
+            <label for="email">Email address</label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">@</span>
+
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              >
+
+            </div>
+
+            <small class="error" id="emailError"></small>
+
+          </div>
+
+          <div class="field">
+
+            <label for="password">Password</label>
+
+            <div class="input-wrap">
+
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Create a strong password"
+                autocomplete="new-password"
+              >
+
+              <button
+                type="button"
+                class="password-toggle"
+                data-target="password"
+                aria-label="Show password"
+              >
+                Show
+              </button>
+
+            </div>
+
+            <div class="strength" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <small class="password-hint">
+              Use 8+ characters with a mix of letters and numbers.
+            </small>
+
+            <small class="error" id="passwordError"></small>
+
+          </div>
+
+          <div class="field">
+
+            <label for="confirmPassword">Confirm password</label>
+
+            <div class="input-wrap">
+
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="Repeat your password"
+                autocomplete="new-password"
+              >
+
+              <button
+                type="button"
+                class="password-toggle"
+                data-target="confirmPassword"
+                aria-label="Show password"
+              >
+                Show
+              </button>
+
+            </div>
+
+            <small class="error" id="confirmPasswordError"></small>
+
+          </div>
+
+          <div class="field">
+
+            <label for="interest">Interest</label>
+
+            <select id="interest" name="interest">
+
+              <option value="">Select your interest</option>
+
+              <option value="software-development">
+                Software Development
+              </option>
+
+              <option value="data-science">
+                Data Science
+              </option>
+
+              <option value="artificial-intelligence">
+                Artificial Intelligence
+              </option>
+
+              <option value="cybersecurity">
+                Cybersecurity
+              </option>
+
+              <option value="competitive-programming">
+                Competitive Programming
+              </option>
+
+              <option value="web-development">
+                Web Development
+              </option>
+
+              <option value="system-design">
+                System Design
+              </option>
+
+              <option value="other">
+                Other
+              </option>
+
+            </select>
+
+            <small class="error" id="interestError"></small>
+
+          </div>
+
+          <label class="terms">
+
+            <input type="checkbox" id="terms">
+
+            <span class="checkmark"></span>
+
+            <span>
+              I agree to the
+              <a href="#">Terms of Service</a>
+              and
+              <a href="#">Privacy Policy</a>.
+            </span>
+
+          </label>
+
+          <small class="error" id="termsError"></small>
+
+          <button class="submit-btn" type="submit">
+
+            <span>Create account</span>
+
+            <span class="arrow">→</span>
+
+          </button>
+
+          <p class="form-note">
+            Your account is the starting point.
+            The real progress happens in the sprint.
+          </p>
+
+        </form>
+
+        <div class="success-state" id="successState">
+
+          <div class="success-icon">✓</div>
+
+          <h2>You're in.</h2>
+
+          <p>
+            Your PeerSprint account is ready.
+            Let's get your first sprint started.
+          </p>
+
+          <button
+            class="back-btn"
+            id="backToForm"
+            type="button"
+          >
+            Create another account
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script src="signup.js"></script>
+
+</body>
+</html>
+

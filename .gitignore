@@ -1,0 +1,32 @@
+# Build output
+build/
+
+#Github_repos
+Backend/External/Crow/
+Backend/External/jwt-cpp/
+
+
+#VS code
+.vscode/
+
+#Object files
+*.o
+*.obj
+
+#CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CPackConfig.cmake
+CPackSourceConfig.cmake
+
+# Executables
+*.exe 
+
+# Secrets
+.env
+
+#Local Database(Used for local data storage on disk)
+/Backend/SQLite/Data/
+/Backend/SQLite/SQLite_data/
