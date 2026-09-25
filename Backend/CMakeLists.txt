@@ -49,6 +49,7 @@ add_executable(my_app
                Routes/Public/Forget_Route.cpp
                Routes/Public/Home_Route.cpp
                Routes/Public/Login_Route.cpp
+               Routes/Public/Membership.cpp
                Routes/Public/Signup_Route.cpp
                src/auth_helper.cpp
                src/crypto_utils.cpp

@@ -16,4 +16,5 @@ void registerRoutes(crow::SimpleApp& app, RedisManager& RedisManager,AuditLogger
     register_JWT_check_Routes(app,RedisManager,AuditLogger);
     register_404_Not_Found_Routes(app);
     register_Dashboard_Routes(app,RedisManager);
+    register_Membership_Routes(app,RedisManager);
 }

@@ -545,12 +545,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         }
 
+                        const formData = new FormData();
+                        formData.append("profile_photo", file);
 
-                        localStorage.setItem(
-                            "archive_profile_avatar",
-                            event.target.result
-                        );
-
+                        const response = await fetch("/update_profile_photo",
+                        {
+                            method: "POST",
+                            credentials: "include",
+                            body: formData
+                        });
 
                         showToast(
                             "Profile photograph updated."

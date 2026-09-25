@@ -16,7 +16,7 @@ void register_Front_Routes(crow::SimpleApp& app,RedisManager &RedisManager)
         if (!check_authentication(req, RedisManager))
         {
             crow::response res(302);
-            res.set_header("Location", "/404_Not_Found");
+            res.set_header("Location", "/login");
             return res;
         }
 
