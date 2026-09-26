@@ -3,168 +3,366 @@
    Profile interactions + backend user data
    ========================================================= */
 
-
 document.addEventListener("DOMContentLoaded", () => {
-
 
     /* =====================================================
        PROFILE DATA
        ===================================================== */
 
     const profile = {
-
         name: "New Scholar",
-
         firstName: "@newscholar",
-
         bio: "Begin your journey through the Archive.",
 
         followers: 0,
-
         following: 0,
-
         sprints: 0,
-
         questions: 0,
-
         contests: 0,
-
         tournaments: 0,
-
-        currentStreak: 0,
-
-        bestStreak: 0,
-
-        contributions: 0,
-
-        peerScore: 0,
-
-        accuracy: 0,
-
-        globalRank: null,
-
-        localRank: null,
 
         skills: [],
 
         connectedAccounts: {
-
             github: false,
-
             linkedin: false,
-
             leetcode: false,
-
-            codechef: false,
-
-            portfolio: false
-
+            codechef: false
         }
-
     };
 
 
     /* =====================================================
-       DOM HELPERS
+       HELPER FUNCTIONS
        ===================================================== */
 
-    const $ = (selector) =>
-        document.querySelector(selector);
+    function getElement(id) {
+        return document.getElementById(id);
+    }
 
 
-    const $$ = (selector) =>
-        document.querySelectorAll(selector);
+    function showToast(message, type = "success") {
 
+        let toast = document.querySelector(".toast");
 
-    /* =====================================================
-       UPDATE AVATAR INITIALS
-       ===================================================== */
-
-    function updateAvatarInitials(name) {
-
-        // Generate initials from name
-        // If name is "Prakhar Srivastava" -> "PS"
-        // If name is "Prakhar" -> "PR"
-
-        const words =
-            name.trim().split(/\s+/);
-
-        let initials = "";
-
-        if (words.length >= 2) {
-
-            initials =
-                (words[0][0] +
-                 words[1][0]).toUpperCase();
-
-        } else if (words.length === 1) {
-
-            const firstWord =
-                words[0];
-
-            if (firstWord.length >= 2) {
-
-                initials =
-                    (firstWord[0] +
-                     firstWord[1]).toUpperCase();
-
-            } else {
-
-                initials =
-                    firstWord[0].toUpperCase();
-
-            }
-
+        if (!toast) {
+            toast = document.createElement("div");
+            toast.className = "toast";
+            document.body.appendChild(toast);
         }
 
-        // Update all avatar initials elements
-        const profileAvatarInitials =
-            document.getElementById(
-                "profileAvatarInitials"
-            );
+        toast.textContent = message;
 
-        if (profileAvatarInitials) {
+        toast.classList.remove("success", "error", "warning");
+        toast.classList.add(type);
 
-            profileAvatarInitials.textContent =
-                initials;
+        toast.classList.add("show");
 
-            console.log(
-                "Updated profileAvatarInitials to:",
-                initials
-            );
-
-        }
-
-
-        const navAvatarInitials =
-            document.getElementById(
-                "navAvatarInitials"
-            );
-
-        if (navAvatarInitials) {
-
-            navAvatarInitials.textContent =
-                initials;
-
-            console.log(
-                "Updated navAvatarInitials to:",
-                initials
-            );
-
-        }
-
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
     }
 
 
     /* =====================================================
-       FETCH USER DATA FROM BACKEND
+       AVATAR INITIALS
+       ===================================================== */
+
+    function updateAvatarInitials(name) {
+
+        const initialsElement = getElement("profileAvatarInitials");
+
+        if (!initialsElement) {
+            return;
+        }
+
+        if (!name || name.trim() === "") {
+            initialsElement.textContent = "--";
+            return;
+        }
+
+        const parts = name.trim().split(/\s+/);
+
+        let initials = "";
+
+        if (parts.length === 1) {
+            initials = parts[0].substring(0, 2);
+        } else {
+            initials =
+                parts[0].charAt(0) +
+                parts[parts.length - 1].charAt(0);
+        }
+
+        initialsElement.textContent = initials.toUpperCase();
+    }
+
+
+    /* =====================================================
+       PROFILE PHOTO
+       ===================================================== */
+
+    const photoInput = getElement("photoInput");
+    const avatarPreview = getElement("avatarImage");
+    const avatarInitials = getElement("profileAvatarInitials");
+
+
+    function displayProfilePhoto(photoPath) {
+
+        if (!avatarPreview) {
+            return;
+        }
+
+        if (!photoPath) {
+
+            avatarPreview.removeAttribute("src");
+            avatarPreview.style.display = "none";
+
+            if (avatarInitials) {
+                avatarInitials.style.display = "flex";
+            }
+
+            return;
+        }
+
+        avatarPreview.src = photoPath;
+
+        avatarPreview.onload = () => {
+
+            avatarPreview.style.display = "block";
+
+            if (avatarInitials) {
+                avatarInitials.style.display = "none";
+            }
+        };
+
+        avatarPreview.onerror = () => {
+
+            console.error(
+                "Unable to load profile photo:",
+                photoPath
+            );
+
+            avatarPreview.style.display = "none";
+
+            if (avatarInitials) {
+                avatarInitials.style.display = "flex";
+            }
+        };
+    }
+
+
+    /* =====================================================
+       PHOTO INPUT
+       ===================================================== */
+
+    if (photoInput) {
+
+        photoInput.addEventListener("change", async function (event) {
+
+            const file = event.target.files?.[0];
+
+            if (!file) {
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               Basic validation
+               --------------------------------------------- */
+
+            if (!file.type.startsWith("image/")) {
+
+                showToast(
+                    "Please select a valid image.",
+                    "error"
+                );
+
+                photoInput.value = "";
+                return;
+            }
+
+
+            const maxSize = 5 * 1024 * 1024;
+
+            if (file.size > maxSize) {
+
+                showToast(
+                    "Image must be smaller than 5 MB.",
+                    "error"
+                );
+
+                photoInput.value = "";
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               Preview locally while uploading
+               --------------------------------------------- */
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                if (!avatarPreview) {
+                    return;
+                }
+
+                avatarPreview.src = event.target.result;
+                avatarPreview.style.display = "block";
+
+                if (avatarInitials) {
+                    avatarInitials.style.display = "none";
+                }
+            };
+
+            reader.readAsDataURL(file);
+
+
+            /* ---------------------------------------------
+               Upload image to backend
+               --------------------------------------------- */
+
+            try {
+
+                showToast(
+                    "Uploading profile photo...",
+                    "success"
+                );
+
+
+                const formData = new FormData();
+
+                formData.append(
+                    "profile_photo",
+                    file
+                );
+
+
+                const response = await fetch(
+                    "/update_profile_photo",
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        body: formData
+                    }
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `Upload failed with status ${response.status}`
+                    );
+                }
+
+
+                const data = await response.json();
+
+                console.log(
+                    "Profile photo upload response:",
+                    data
+                );
+
+
+                /*
+                 * Backend can return any one of these:
+                 *
+                 * {
+                 *     profilePhoto: "/uploads/abc.jpg"
+                 * }
+                 *
+                 * OR
+                 *
+                 * {
+                 *     photoPath: "/uploads/abc.jpg"
+                 * }
+                 *
+                 * OR
+                 *
+                 * {
+                 *     imagePath: "/uploads/abc.jpg"
+                 * }
+                 *
+                 * OR
+                 *
+                 * {
+                 *     path: "/uploads/abc.jpg"
+                 * }
+                 */
+
+                const photoPath =
+                    data.profilePhoto ||
+                    data.profile_photo ||
+                    data.photoPath ||
+                    data.imagePath ||
+                    data.path;
+
+
+                if (photoPath) {
+
+                    displayProfilePhoto(photoPath);
+
+                    showToast(
+                        "Profile photo updated successfully.",
+                        "success"
+                    );
+
+                } else {
+
+                    /*
+                     * Upload may still have succeeded even
+                     * if backend doesn't return the path.
+                     *
+                     * Fetch user data again so that the
+                     * database value can be retrieved.
+                     */
+
+                    await fetchUserData();
+
+                    showToast(
+                        "Profile photo uploaded successfully.",
+                        "success"
+                    );
+                }
+
+
+                updateProfileCompletion();
+
+            } catch (error) {
+
+                console.error(
+                    "Profile photo upload error:",
+                    error
+                );
+
+                showToast(
+                    "Failed to upload profile photo.",
+                    "error"
+                );
+            }
+
+
+            /*
+             * Allow selecting the same image again.
+             */
+
+            photoInput.value = "";
+        });
+    }
+
+
+    /* =====================================================
+       FETCH USER DATA
        ===================================================== */
 
     async function fetchUserData() {
 
         try {
 
-            console.log("Fetching user data from /fetch_user_data...");
+            console.log(
+                "Fetching user data from /Fetch_user_data..."
+            );
 
 
             const response = await fetch(
@@ -184,9 +382,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
 
                 throw new Error(
-                    `HTTP error: ${response.status}`
+                    `Fetch user data failed: ${response.status}`
                 );
-
             }
 
 
@@ -199,233 +396,170 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            /*
-             * Expected backend response:
-             *
-             * {
-             *     "firstName": "Prakhar"
-             * }
-             */
-
+            /* =================================================
+               FIRST NAME
+               ================================================= */
 
             if (data.firstName) {
 
-                // Update the full name display
-                const nameElement =
-                    document.getElementById(
-                        "userFullName"
-                    );
+                const fullNameElement =
+                    getElement("userFullName");
 
-
-                if (nameElement) {
-
-                    nameElement.textContent =
+                if (fullNameElement) {
+                    fullNameElement.textContent =
                         data.firstName;
-
-                    console.log(
-                        "Updated userFullName to:",
-                        data.firstName
-                    );
-
                 }
 
 
-                // Update the handle/username display
-                const handleElement =
-                    document.getElementById(
-                        "userHandle"
-                    );
+                profile.name = data.firstName;
 
+
+                updateAvatarInitials(
+                    data.firstName
+                );
+            }
+
+
+            /* =================================================
+               USERNAME
+               ================================================= */
+
+            if (data.username) {
+
+                const handleElement =
+                    getElement("userHandle");
+
+                if (handleElement) {
+
+                    let username =
+                        data.username;
+
+                    if (!username.startsWith("@")) {
+                        username = "@" + username;
+                    }
+
+                    handleElement.textContent =
+                        username;
+                }
+
+
+                profile.firstName =
+                    data.username;
+            }
+
+            else if (data.firstName) {
+
+                const handleElement =
+                    getElement("userHandle");
 
                 if (handleElement) {
 
                     handleElement.textContent =
-                        "@" + data.firstName.toLowerCase().replace(/\s+/g, "");
-
-                    console.log(
-                        "Updated userHandle to:",
-                        handleElement.textContent
-                    );
-
+                        "@" +
+                        data.firstName
+                            .toLowerCase()
+                            .replace(/\s+/g, "");
                 }
+            }
 
 
-                // Update avatar initials from firstName
-                updateAvatarInitials(
-                    data.firstName
+            /* =================================================
+               MONGODB OBJECT ID
+               ================================================= */
+
+            if (data.Id) {
+
+                console.log(
+                    "MongoDB User ID:",
+                    data.Id
                 );
+            }
 
 
-                /*
-                 * Also update the internal
-                 * profile object so other
-                 * functions use the real name.
-                 */
+            /* =================================================
+               PROFILE PHOTO
+               ================================================= */
 
-                profile.name =
-                    data.firstName;
+            const photoPath =
+                data.profilePhoto ||
+                data.profile_photo ||
+                data.photoPath ||
+                data.imagePath ||
+                data.profileImage ||
+                data.profile_image;
 
 
-                updateProfileCompletion();
+            if (photoPath) {
 
-                showToast(
-                    `Welcome back, ${data.firstName}!`,
-                    "success"
+                displayProfilePhoto(
+                    photoPath
                 );
 
             } else {
 
-                throw new Error(
-                    "No firstName in response"
-                );
+                /*
+                 * No backend photo exists.
+                 * Show initials.
+                 */
 
+                displayProfilePhoto(null);
+
+                if (data.firstName) {
+
+                    updateAvatarInitials(
+                        data.firstName
+                    );
+                }
             }
 
-        }
 
-        catch (error) {
+            updateProfileCompletion();
+
+
+            showToast(
+                `Welcome back, ${data.firstName || "Scholar"}!`,
+                "success"
+            );
+
+
+            return data;
+
+        } catch (error) {
 
             console.error(
-                "Failed to fetch user data:",
+                "fetchUserData() error:",
                 error
             );
 
 
-            /*
-             * Keep the page usable even
-             * if API request fails.
-             */
+            const fullNameElement =
+                getElement("userFullName");
 
-            const nameElement =
-                document.getElementById(
-                    "userFullName"
-                );
+            if (fullNameElement) {
 
+                /*
+                 * Don't leave the page permanently
+                 * stuck at Loading...
+                 */
 
-            if (nameElement) {
-
-                nameElement.textContent =
-                    "New Scholar";
-
+                fullNameElement.textContent =
+                    "Scholar";
             }
 
 
             const handleElement =
-                document.getElementById(
-                    "userHandle"
-                );
-
+                getElement("userHandle");
 
             if (handleElement) {
-
                 handleElement.textContent =
-                    "@newscholar";
-
+                    "@scholar";
             }
 
 
-            showToast(
-                "Could not load user data. Check console.",
-                "error"
+            updateAvatarInitials(
+                "Scholar"
             );
-
         }
-
-    }
-
-
-    /* =====================================================
-       TOAST
-       ===================================================== */
-
-    function showToast(
-        message,
-        type = "default"
-    ) {
-
-        let toast =
-            document.getElementById(
-                "toast"
-            );
-
-
-        if (!toast) {
-
-            toast =
-                document.createElement(
-                    "div"
-                );
-
-            toast.id =
-                "toast";
-
-            toast.className =
-                "toast";
-
-            document.body.appendChild(
-                toast
-            );
-
-        }
-
-
-        toast.textContent =
-            message;
-
-
-        toast.className =
-            `toast show ${type}`;
-
-
-        clearTimeout(
-            toast._timer
-        );
-
-
-        toast._timer =
-            setTimeout(() => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            }, 2800);
-
-    }
-
-
-    /* =====================================================
-       PROFILE STATS
-       ===================================================== */
-
-    function updateProfileStats() {
-
-        const stats = {
-            "followers": profile.followers,
-            "following": profile.following,
-            "sprints": profile.sprints,
-            "questions": profile.questions,
-            "contests": profile.contests,
-            "tournaments": profile.tournaments
-        };
-
-
-        Object.entries(stats).forEach(
-            ([id, value]) => {
-
-                const element =
-                    document.getElementById(id);
-
-                if (element) {
-
-                    element.textContent =
-                        value;
-
-                }
-
-            }
-        );
-
     }
 
 
@@ -435,238 +569,299 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateProfileCompletion() {
 
-        let completionScore = 0;
+        const nameComplete =
+            profile.name &&
+            profile.name !== "New Scholar";
 
-        const checks = {
-            "name": profile.name !== "New Scholar",
-            "bio": profile.bio !== "",
-            "skills": profile.skills.length > 0,
-            "avatar": localStorage.getItem("archive_profile_avatar") !== null
+
+        const bioComplete =
+            profile.bio &&
+            profile.bio.trim() !== "";
+
+
+        const skillsComplete =
+            profile.skills &&
+            profile.skills.length > 0;
+
+
+        const avatarComplete =
+            avatarPreview &&
+            avatarPreview.style.display !== "none" &&
+            avatarPreview.src;
+
+
+        const completed =
+            [
+                nameComplete,
+                bioComplete,
+                skillsComplete,
+                avatarComplete
+            ].filter(Boolean).length;
+
+
+        const percentage =
+            completed * 25;
+
+
+        const progressElements =
+            document.querySelectorAll(
+                "[data-profile-completion]"
+            );
+
+
+        progressElements.forEach(
+            element => {
+                element.textContent =
+                    `${percentage}%`;
+            }
+        );
+
+
+        /*
+         * Support common IDs if they exist
+         * in the HTML.
+         */
+
+        const completion =
+            getElement("profileCompletion");
+
+        if (completion) {
+            completion.textContent =
+                `${percentage}%`;
+        }
+
+
+        const progressBar =
+            getElement("profileProgress");
+
+        if (progressBar) {
+            progressBar.style.width =
+                `${percentage}%`;
+        }
+    }
+
+
+    /* =====================================================
+       STATS
+       ===================================================== */
+
+    function updateStats() {
+
+        const stats = {
+            followers: profile.followers,
+            following: profile.following,
+            sprints: profile.sprints,
+            questions: profile.questions,
+            contests: profile.contests,
+            tournaments: profile.tournaments
         };
 
 
-        Object.values(checks).forEach(
-            (check) => {
+        Object.entries(stats).forEach(
+            ([key, value]) => {
 
-                if (check)
-                    completionScore += 25;
+                const element =
+                    getElement(key);
 
+                if (element) {
+                    element.textContent =
+                        value;
+                }
             }
         );
-
-
-        const completionText =
-            document.getElementById(
-                "completionText"
-            );
-
-
-        const completionBar =
-            document.getElementById(
-                "completionBar"
-            );
-
-
-        if (completionText) {
-
-            completionText.textContent =
-                `${completionScore}%`;
-
-        }
-
-
-        if (completionBar) {
-
-            completionBar.style.width =
-                `${completionScore}%`;
-
-        }
-
     }
 
 
     /* =====================================================
-       PROFILE PHOTO
+       SKILLS
        ===================================================== */
 
-    const avatarInput =
-        document.getElementById(
-            "photoInput"
-        );
+    function renderSkills() {
+
+        const skillsList =
+            getElement("skillsList");
+
+        if (!skillsList) {
+            return;
+        }
 
 
-    const avatarPreview =
-        document.getElementById(
-            "avatarImage"
-        );
+        skillsList.innerHTML = "";
 
 
-    if (avatarInput) {
+        if (!profile.skills.length) {
 
-        avatarInput.addEventListener(
-            "change",
-            function () {
+            const empty =
+                document.createElement("div");
 
-                const file =
-                    this.files?.[0];
+            empty.className =
+                "empty-skills";
 
+            empty.textContent =
+                "No skills added yet.";
 
-                if (!file)
-                    return;
+            skillsList.appendChild(
+                empty
+            );
 
-
-                if (
-                    !file.type.startsWith(
-                        "image/"
-                    )
-                ) {
-
-                    showToast(
-                        "Please select an image file.",
-                        "error"
-                    );
-
-                    return;
-
-                }
+            return;
+        }
 
 
-                const reader =
-                    new FileReader();
+        profile.skills.forEach(
+            skill => {
+
+                const skillElement =
+                    document.createElement("div");
+
+                skillElement.className =
+                    "skill-item";
 
 
-                reader.onload =
-                    function (event) {
+                const name =
+                    document.createElement("span");
 
-                        if (avatarPreview) {
+                name.className =
+                    "skill-name";
 
-                            avatarPreview.src =
-                                event.target.result;
-
-                        }
-
-                        const formData = new FormData();
-                        formData.append("profile_photo", file);
-
-                        const response = await fetch("/update_profile_photo",
-                        {
-                            method: "POST",
-                            credentials: "include",
-                            body: formData
-                        });
-
-                        showToast(
-                            "Profile photograph updated."
-                        );
-
-                        updateProfileCompletion();
-
-                    };
+                name.textContent =
+                    skill.name;
 
 
-                reader.readAsDataURL(
-                    file
+                const level =
+                    document.createElement("span");
+
+                level.className =
+                    "skill-level";
+
+                level.textContent =
+                    skill.level || "Beginner";
+
+
+                skillElement.appendChild(
+                    name
                 );
 
+                skillElement.appendChild(
+                    level
+                );
+
+
+                skillsList.appendChild(
+                    skillElement
+                );
             }
         );
-
     }
 
 
     /* =====================================================
-       LOAD SAVED PROFILE PHOTO
+       ADD SKILL MODAL
        ===================================================== */
 
-    const savedAvatar =
-        localStorage.getItem(
-            "archive_profile_avatar"
-        );
+    const addSkillBtn =
+        getElement("addSkillBtn");
+
+    const skillModal =
+        getElement("skillModal");
+
+    const saveSkill =
+        getElement("saveSkill");
+
+    const skillName =
+        getElement("skillName");
+
+    const skillLevel =
+        getElement("skillLevel");
 
 
-    if (
-        savedAvatar &&
-        avatarPreview
-    ) {
+    if (addSkillBtn && skillModal) {
 
-        avatarPreview.src =
-            savedAvatar;
-
-    }
-
-
-    /* =====================================================
-       FOLLOW BUTTON
-       ===================================================== */
-
-    const followButton =
-        document.getElementById(
-            "followBtn"
-        );
-
-
-    if (followButton) {
-
-        let following = false;
-
-
-        followButton.addEventListener(
+        addSkillBtn.addEventListener(
             "click",
             () => {
 
-                following =
-                    !following;
-
-
-                if (following) {
-
-                    followButton.innerHTML =
-                        `<i class="fa-solid fa-user-check"></i> Following`;
-
-                    followButton.classList.add(
-                        "active"
-                    );
-
-
-                    profile.followers++;
-
-
-                    showToast(
-                        "You are now following this scholar."
-                    );
-
-                }
-
-                else {
-
-                    followButton.innerHTML =
-                        `<i class="fa-solid fa-user-plus"></i> Follow`;
-
-                    followButton.classList.remove(
-                        "active"
-                    );
-
-
-                    profile.followers =
-                        Math.max(
-                            0,
-                            profile.followers - 1
-                        );
-
-
-                    showToast(
-                        "Scholar removed from your following list."
-                    );
-
-                }
-
-
-                updateProfileStats();
-
+                skillModal.style.display =
+                    "flex";
             }
         );
-
     }
+
+
+    if (saveSkill) {
+
+        saveSkill.addEventListener(
+            "click",
+            () => {
+
+                const name =
+                    skillName?.value.trim();
+
+                const level =
+                    skillLevel?.value || "Beginner";
+
+
+                if (!name) {
+
+                    showToast(
+                        "Please enter a skill.",
+                        "warning"
+                    );
+
+                    return;
+                }
+
+
+                profile.skills.push({
+                    name,
+                    level
+                });
+
+
+                renderSkills();
+
+                updateProfileCompletion();
+
+
+                if (skillModal) {
+                    skillModal.style.display =
+                        "none";
+                }
+
+
+                if (skillName) {
+                    skillName.value = "";
+                }
+
+
+                showToast(
+                    "Skill added successfully.",
+                    "success"
+                );
+            }
+        );
+    }
+
+
+    /* =====================================================
+       CLOSE MODALS
+       ===================================================== */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.classList.contains(
+                    "modal"
+                )
+            ) {
+
+                event.target.style.display =
+                    "none";
+            }
+        }
+    );
 
 
     /* =====================================================
@@ -674,204 +869,133 @@ document.addEventListener("DOMContentLoaded", () => {
        ===================================================== */
 
     const editBtn =
-        document.getElementById(
-            "editBtn"
-        );
+        getElement("editBtn");
 
     const editModal =
-        document.getElementById(
-            "editModal"
-        );
+        getElement("editModal");
 
-    const saveProfileBtn =
-        document.getElementById(
-            "saveProfile"
-        );
+    const editName =
+        getElement("editName");
 
-    const editNameInput =
-        document.getElementById(
-            "editName"
-        );
+    const editUsername =
+        getElement("editUsername");
 
-    const editUsernameInput =
-        document.getElementById(
-            "editUsername"
-        );
+    const editBio =
+        getElement("editBio");
 
-    const editBioInput =
-        document.getElementById(
-            "editBio"
-        );
+    const saveProfile =
+        getElement("saveProfile");
 
 
-    if (editBtn) {
+    if (editBtn && editModal) {
 
         editBtn.addEventListener(
             "click",
             () => {
 
-                if (editModal) {
-
-                    editModal.classList.add(
-                        "open"
-                    );
-
-                    if (editNameInput) {
-
-                        editNameInput.value =
-                            profile.name;
-
-                    }
-
-                    if (editUsernameInput) {
-
-                        editUsernameInput.value =
-                            profile.firstName;
-
-                    }
-
-                    if (editBioInput) {
-
-                        editBioInput.value =
-                            profile.bio;
-
-                    }
-
+                if (editName) {
+                    editName.value =
+                        profile.name;
                 }
 
+
+                if (editUsername) {
+                    editUsername.value =
+                        profile.firstName;
+                }
+
+
+                if (editBio) {
+                    editBio.value =
+                        profile.bio;
+                }
+
+
+                editModal.style.display =
+                    "flex";
             }
         );
-
     }
 
 
-    if (saveProfileBtn) {
+    if (saveProfile) {
 
-        saveProfileBtn.addEventListener(
+        saveProfile.addEventListener(
             "click",
             () => {
 
-                if (editNameInput) {
+                const newName =
+                    editName?.value.trim();
+
+                const newUsername =
+                    editUsername?.value.trim();
+
+                const newBio =
+                    editBio?.value.trim();
+
+
+                if (newName) {
 
                     profile.name =
-                        editNameInput.value;
+                        newName;
+
 
                     const nameElement =
-                        document.getElementById(
-                            "userFullName"
-                        );
+                        getElement("userFullName");
 
                     if (nameElement) {
-
                         nameElement.textContent =
-                            profile.name;
-
+                            newName;
                     }
 
-                    // Update initials when name changes
-                    updateAvatarInitials(
-                        profile.name
-                    );
 
+                    updateAvatarInitials(
+                        newName
+                    );
                 }
 
 
-                if (editUsernameInput) {
+                if (newUsername) {
 
                     profile.firstName =
-                        editUsernameInput.value;
+                        newUsername;
+
 
                     const handleElement =
-                        document.getElementById(
-                            "userHandle"
-                        );
+                        getElement("userHandle");
 
                     if (handleElement) {
 
                         handleElement.textContent =
-                            "@" + profile.firstName.toLowerCase().replace(/\s+/g, "");
-
+                            newUsername.startsWith("@")
+                                ? newUsername
+                                : "@" + newUsername;
                     }
-
                 }
 
 
-                if (editBioInput) {
-
+                if (newBio) {
                     profile.bio =
-                        editBioInput.value;
-
-                    const bioElement =
-                        document.getElementById(
-                            "bio"
-                        );
-
-                    if (bioElement) {
-
-                        bioElement.textContent =
-                            profile.bio;
-
-                    }
-
+                        newBio;
                 }
 
-
-                closeModal(editModal);
 
                 updateProfileCompletion();
 
-                showToast(
-                    "Profile updated successfully!"
-                );
 
+                if (editModal) {
+                    editModal.style.display =
+                        "none";
+                }
+
+
+                showToast(
+                    "Profile updated.",
+                    "success"
+                );
             }
         );
-
     }
-
-
-    /* =====================================================
-       MODAL CONTROLS
-       ===================================================== */
-
-    function closeModal(modal) {
-
-        if (modal) {
-
-            modal.classList.remove(
-                "open"
-            );
-
-        }
-
-    }
-
-
-    const modalCloseButtons =
-        document.querySelectorAll(
-            "[data-close]"
-        );
-
-
-    modalCloseButtons.forEach(
-        (button) => {
-
-            button.addEventListener(
-                "click",
-                (event) => {
-
-                    let modal =
-                        event.target.closest(
-                            ".modal"
-                        );
-
-                    closeModal(modal);
-
-                }
-            );
-
-        }
-    );
 
 
     /* =====================================================
@@ -879,482 +1003,61 @@ document.addEventListener("DOMContentLoaded", () => {
        ===================================================== */
 
     const copyHandle =
-        document.getElementById(
-            "copyHandle"
-        );
+        getElement("copyHandle");
 
 
     if (copyHandle) {
 
         copyHandle.addEventListener(
             "click",
-            () => {
+            async () => {
 
                 const handleElement =
-                    document.getElementById(
-                        "userHandle"
+                    getElement("userHandle");
+
+                const handle =
+                    handleElement?.textContent || "";
+
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        handle
                     );
-
-                if (handleElement) {
-
-                    const text =
-                        handleElement.textContent;
-
-                    navigator.clipboard.writeText(
-                        text
-                    ).then(() => {
-
-                        showToast(
-                            `Copied: ${text}`
-                        );
-
-                    }).catch(() => {
-
-                        showToast(
-                            "Failed to copy",
-                            "error"
-                        );
-
-                    });
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SHARE BUTTON
-       ===================================================== */
-
-    const shareBtn =
-        document.getElementById(
-            "shareBtn"
-        );
-
-
-    if (shareBtn) {
-
-        shareBtn.addEventListener(
-            "click",
-            () => {
-
-                if (navigator.share) {
-
-                    navigator.share({
-                        title: `${profile.name}'s Scholar Profile`,
-                        text: "Check out my profile on The Archive!"
-                    }).catch(
-                        (error) => console.log(
-                            "Share error:",
-                            error
-                        )
-                    );
-
-                }
-
-                else {
 
                     showToast(
-                        "Share not supported on this device",
-                        "info"
+                        "Handle copied.",
+                        "success"
                     );
 
-                }
+                } catch (error) {
 
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SKILL MANAGEMENT
-       ===================================================== */
-
-    const addSkillBtn =
-        document.getElementById(
-            "addSkillBtn"
-        );
-
-    const skillModal =
-        document.getElementById(
-            "skillModal"
-        );
-
-    const saveSkillBtn =
-        document.getElementById(
-            "saveSkill"
-        );
-
-    const skillNameInput =
-        document.getElementById(
-            "skillName"
-        );
-
-    const skillLevelSelect =
-        document.getElementById(
-            "skillLevel"
-        );
-
-
-    if (addSkillBtn) {
-
-        addSkillBtn.addEventListener(
-            "click",
-            () => {
-
-                if (skillModal) {
-
-                    skillModal.classList.add(
-                        "open"
+                    console.error(
+                        "Clipboard error:",
+                        error
                     );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    if (saveSkillBtn) {
-
-        saveSkillBtn.addEventListener(
-            "click",
-            () => {
-
-                if (skillNameInput && skillNameInput.value.trim()) {
-
-                    const skillName =
-                        skillNameInput.value.trim();
-
-                    const skillLevel =
-                        skillLevelSelect?.value || "Beginner";
-
-
-                    profile.skills.push(
-                        `${skillName} (${skillLevel})`
-                    );
-
-
-                    skillNameInput.value =
-                        "";
-
-                    skillLevelSelect.value =
-                        "Beginner";
-
-                    closeModal(skillModal);
-
-                    renderSkills();
-
-                    updateProfileCompletion();
 
                     showToast(
-                        `Added skill: ${skillName}`
-                    );
-
-                }
-
-                else {
-
-                    showToast(
-                        "Please enter a skill name",
+                        "Unable to copy handle.",
                         "error"
                     );
-
                 }
-
             }
         );
-
-    }
-
-
-    function renderSkills() {
-
-        const skillsContainer =
-            document.getElementById(
-                "skillsList"
-            );
-
-
-        if (!skillsContainer)
-            return;
-
-
-        if (
-            profile.skills.length === 0
-        ) {
-
-            skillsContainer.innerHTML = `
-
-                <div class="empty-state">
-
-                    <div class="empty-icon">
-
-                        <i class="fa-solid fa-layer-group"></i>
-
-                    </div>
-
-                    <h3>
-                        No skills added yet
-                    </h3>
-
-                    <p>
-                        Tell your peers what you are learning.
-                        Skills will appear here with progress
-                        as you practice.
-                    </p>
-
-                    <button
-                        class="primary small"
-                        id="emptySkillBtn">
-
-                        Add your first skill
-
-                    </button>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        skillsContainer.innerHTML =
-            profile.skills
-                .map(
-                    (skill, index) => `
-
-                        <div class="skill-tag">
-
-                            <span>
-                                ${escapeHTML(skill)}
-                            </span>
-
-                            <button
-                                type="button"
-                                class="remove-skill"
-                                data-index="${index}">
-
-                                ×
-
-                            </button>
-
-                        </div>
-
-                    `
-                )
-                .join("");
-
-
-        $$(".remove-skill").forEach(
-            (button) => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const index =
-                            Number(
-                                button.dataset.index
-                            );
-
-
-                        profile.skills.splice(
-                            index,
-                            1
-                        );
-
-
-                        renderSkills();
-
-                        updateProfileCompletion();
-
-                    }
-                );
-
-            }
-        );
-
     }
 
 
     /* =====================================================
-       ACTIVITY HEATMAP
+       THEME
        ===================================================== */
 
-    const heatmap =
-        document.getElementById(
-            "heatmap"
-        );
+    const themeBtn =
+        getElement("themeBtn");
 
 
-    function generateContributionLevel(
-        count
-    ) {
+    if (themeBtn) {
 
-        if (count === 0)
-            return "level-0";
-
-        if (count <= 2)
-            return "level-1";
-
-        if (count <= 5)
-            return "level-2";
-
-        if (count <= 8)
-            return "level-3";
-
-        return "level-4";
-
-    }
-
-
-    function buildHeatmap() {
-
-        if (!heatmap)
-            return;
-
-
-        heatmap.innerHTML = "";
-
-
-        const days = 365;
-
-
-        for (
-            let i = 0;
-            i < days;
-            i++
-        ) {
-
-            const cell =
-                document.createElement(
-                    "div"
-                );
-
-
-            cell.className =
-                "activity-cell";
-
-
-            const contributions = 0;
-
-
-            cell.dataset.contributions =
-                contributions;
-
-
-            cell.classList.add(
-                generateContributionLevel(
-                    contributions
-                )
-            );
-
-
-            const date =
-                new Date();
-
-
-            date.setDate(
-                date.getDate() -
-                (days - i)
-            );
-
-
-            const formattedDate =
-                date.toLocaleDateString(
-                    "en-IN",
-                    {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric"
-                    }
-                );
-
-
-            cell.title =
-                `${formattedDate} — ${contributions} contribution${contributions === 1 ? "" : "s"}`;
-
-
-            heatmap.appendChild(
-                cell
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ACTIVITY SUMMARY
-       ===================================================== */
-
-    function updateActivitySummary() {
-
-        const contributionElement =
-            document.getElementById(
-                "activityTotal"
-            );
-
-
-        const streakElement =
-            document.getElementById(
-                "currentStreak"
-            );
-
-
-        const bestStreakElement =
-            document.getElementById(
-                "bestStreak"
-            );
-
-
-        if (contributionElement) {
-
-            contributionElement.textContent =
-                profile.contributions;
-
-        }
-
-
-        if (streakElement) {
-
-            streakElement.textContent =
-                profile.currentStreak;
-
-        }
-
-
-        if (bestStreakElement) {
-
-            bestStreakElement.textContent =
-                profile.bestStreak;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       DARK MODE
-       ===================================================== */
-
-    const themeButton =
-        document.getElementById(
-            "themeBtn"
-        );
-
-
-    if (themeButton) {
-
-        themeButton.addEventListener(
+        themeBtn.addEventListener(
             "click",
             () => {
 
@@ -1362,25 +1065,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     "dark-mode"
                 );
 
-
-                const isDark =
+                const dark =
                     document.body.classList.contains(
                         "dark-mode"
                     );
 
-
                 localStorage.setItem(
                     "archive_theme",
-                    isDark
+                    dark
                         ? "dark"
                         : "light"
                 );
-
             }
         );
-
     }
 
+
+    /* =====================================================
+       LOAD THEME
+       ===================================================== */
 
     const savedTheme =
         localStorage.getItem(
@@ -1388,91 +1091,113 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    if (
-        savedTheme === "dark"
-    ) {
+    if (savedTheme === "dark") {
 
         document.body.classList.add(
             "dark-mode"
         );
-
     }
 
 
     /* =====================================================
-       ESC KEY
+       FOLLOW BUTTON
        ===================================================== */
 
-    document.addEventListener(
-        "keydown",
-        (event) => {
+    const followBtn =
+        getElement("followBtn");
 
-            if (
-                event.key !==
-                "Escape"
-            ) {
 
-                return;
+    if (followBtn) {
 
+        followBtn.addEventListener(
+            "click",
+            () => {
+
+                const isFollowing =
+                    followBtn.dataset.following ===
+                    "true";
+
+
+                if (isFollowing) {
+
+                    followBtn.dataset.following =
+                        "false";
+
+                    followBtn.textContent =
+                        "Follow";
+
+                    profile.followers =
+                        Math.max(
+                            0,
+                            profile.followers - 1
+                        );
+
+                } else {
+
+                    followBtn.dataset.following =
+                        "true";
+
+                    followBtn.textContent =
+                        "Following";
+
+                    profile.followers++;
+                }
+
+
+                updateStats();
             }
-
-
-            closeModal(
-                editModal
-            );
-
-
-            closeModal(
-                skillModal
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       UTILITY
-       ===================================================== */
-
-    function escapeHTML(value) {
-
-        return String(value)
-
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-
-            .replace(
-                /</g,
-                "&lt;"
-            )
-
-            .replace(
-                />/g,
-                "&gt;"
-            )
-
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
+        );
     }
 
 
     /* =====================================================
-       INITIALIZE PAGE
+       HEATMAP
        ===================================================== */
 
-    updateProfileStats();
+    function buildHeatmap() {
 
-    updateActivitySummary();
+        const heatmap =
+            getElement("heatmap");
+
+        if (!heatmap) {
+            return;
+        }
+
+
+        heatmap.innerHTML = "";
+
+
+        for (let i = 0; i < 140; i++) {
+
+            const cell =
+                document.createElement("div");
+
+            cell.className =
+                "heatmap-cell";
+
+
+            const activity =
+                Math.floor(
+                    Math.random() * 5
+                );
+
+
+            cell.dataset.level =
+                activity;
+
+
+            heatmap.appendChild(
+                cell
+            );
+        }
+    }
+
+
+    /* =====================================================
+       INITIAL UI
+       ===================================================== */
+
+    updateStats();
 
     updateProfileCompletion();
 
@@ -1480,19 +1205,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderSkills();
 
-    // Initialize with default initials
-    updateAvatarInitials("New Scholar");
-
 
     /*
-     * ✅ DASHBOARD LOAD HOTE HI /fetch_user_data API CALL HOGA
-     * 
-     * Backend se firstName mila toh page par user ka 
-     * name print hoga, handle update hoga, aur initials
-     * bhi firstName ke hisaab se change hoga.
+     * Default avatar until backend data arrives.
      */
 
-    console.log("🚀 Initializing Dashboard - calling fetchUserData()");
+    updateAvatarInitials(
+        "New Scholar"
+    );
+
+
+    /* =====================================================
+       FETCH USER DATA ON PAGE LOAD
+       ===================================================== */
+
+    console.log(
+        "🚀 Initializing Dashboard - calling fetchUserData()"
+    );
+
 
     fetchUserData();
 

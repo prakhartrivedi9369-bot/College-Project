@@ -44,6 +44,7 @@ add_executable(my_app
                Routes/Protected/Dashboard_Route.cpp
                Routes/Protected/Front_Route.cpp
                Routes/Protected/JWT_check.cpp
+               Routes/Protected/Order_list.cpp
                Routes/Protected/OTP_Route.cpp
                Routes/Public/404_Not_Found.cpp
                Routes/Public/Forget_Route.cpp
