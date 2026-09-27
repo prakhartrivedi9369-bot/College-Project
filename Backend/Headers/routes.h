@@ -20,3 +20,4 @@ void register_Membership_Routes(crow::SimpleApp& app,RedisManager& RedisManager)
 void register_Front_Routes(crow::SimpleApp& app,RedisManager &RedisManager);
 void register_Dashboard_Routes(crow::SimpleApp& app,RedisManager& RedisManager);
 void register_Order_list_Routes(crow::SimpleApp& app,RedisManager& RedisManager);
+void register_Create_Sprint_Routes(crow::SimpleApp& app,RedisManager& RedisManager);

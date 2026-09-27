@@ -18,4 +18,5 @@ void registerRoutes(crow::SimpleApp& app, RedisManager& RedisManager,AuditLogger
     register_Dashboard_Routes(app,RedisManager);
     register_Membership_Routes(app,RedisManager);
     register_Order_list_Routes(app,RedisManager);
+    register_Create_Sprint_Routes(app,RedisManager);
 }

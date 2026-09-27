@@ -137,9 +137,15 @@
                 <!-- Hero Actions & Badges -->
                 <div class="mt-8 pt-6 border-t border-paper-border flex flex-wrap items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-3">
-                        <button onclick="openModal('Peer Matchmaker', 'Searching for active peers in algorithms and architecture...')" class="bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider px-6 py-3 rounded flex items-center gap-2 shadow transition-all">
-                            <i class="fa-solid fa-hourglass-start text-brass-light"></i> Join a Sprint
-                        </button>
+                        <button onclick="openModal(
+    'Peer Matchmaker',
+    'Searching for active peers in algorithms and architecture...',
+    '/Create_Sprint'
+)" class="bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider px-6 py-3 rounded flex items-center gap-2 shadow transition-all">
+
+    <i class="fa-solid fa-hourglass-start text-brass-light"></i>
+    Join a Sprint
+</button>
                         <a href="#leaderboard" class="bg-paper-light hover:bg-paper-dark text-walnut-dark border border-paper-border font-mono text-xs uppercase tracking-wider px-5 py-3 rounded flex items-center gap-2 transition-all">
                             <i class="fa-solid fa-scroll text-teal"></i> Leaderboard
                         </a>
@@ -621,10 +627,15 @@
                     <div class="wax-seal w-16 h-16 rounded-full flex items-center justify-center text-paper font-serif font-bold text-2xl shadow-xl mb-3">
                         <i class="fa-solid fa-award"></i>
                     </div>
-                    <span class="font-serif text-2xl font-bold text-paper-light">$12 <span class="text-xs font-mono font-normal text-paper-dark/60">/ month</span></span>
-                    <button onclick="openModal('Scholar Pass Upgrade', 'Redirecting to secure scholastic patron checkout portal...')" class="mt-4 w-full bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-bold uppercase tracking-wider py-3 rounded transition-all shadow">
-                        Claim Scholar Pass
-                    </button>
+                    <span class="font-serif text-2xl font-bold text-paper-light">299 <span class="text-xs font-mono font-normal text-paper-dark/60">/ month</span></span>
+                    <button onclick="openModal(
+    'Scholar Pass Upgrade',
+    'Redirecting to secure scholastic patron checkout portal...',
+    '/Membership'
+)" class="mt-4 w-full bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-bold uppercase tracking-wider py-3 rounded transition-all shadow">
+
+    Claim Scholar Pass
+</button>
                 </div>
             </div>
         </section>

@@ -70,31 +70,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateAvatarInitials(name) {
 
-        const initialsElement = getElement("profileAvatarInitials");
+    const profileInitialsElement =
+        getElement("profileAvatarInitials");
 
-        if (!initialsElement) {
-            return;
+    const navInitialsElement =
+        getElement("navAvatarInitials");
+
+    if (!name || name.trim() === "") {
+
+        if (profileInitialsElement) {
+            profileInitialsElement.textContent = "--";
         }
 
-        if (!name || name.trim() === "") {
-            initialsElement.textContent = "--";
-            return;
+        if (navInitialsElement) {
+            navInitialsElement.textContent = "--";
         }
 
-        const parts = name.trim().split(/\s+/);
-
-        let initials = "";
-
-        if (parts.length === 1) {
-            initials = parts[0].substring(0, 2);
-        } else {
-            initials =
-                parts[0].charAt(0) +
-                parts[parts.length - 1].charAt(0);
-        }
-
-        initialsElement.textContent = initials.toUpperCase();
+        return;
     }
+
+    const parts = name.trim().split(/\s+/);
+
+    let initials = "";
+
+    if (parts.length === 1) {
+
+        initials =
+            parts[0].substring(0, 2);
+
+    } else {
+
+        initials =
+            parts[0].charAt(0) +
+            parts[parts.length - 1].charAt(0);
+    }
+
+    initials = initials.toUpperCase();
+
+
+    // Main profile avatar
+    if (profileInitialsElement) {
+        profileInitialsElement.textContent =
+            initials;
+    }
+
+
+    // Navbar avatar
+    if (navInitialsElement) {
+        navInitialsElement.textContent =
+            initials;
+    }
+}
 
 
     /* =====================================================

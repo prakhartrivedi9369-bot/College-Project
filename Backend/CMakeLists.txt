@@ -41,6 +41,7 @@ add_executable(my_app
                Redis/Redis_JWT_check.cpp
                Redis/Redis_Start.cpp
                Redis/Reset_Pass.cpp
+               Routes/Protected/Create_Sprint.cpp
                Routes/Protected/Dashboard_Route.cpp
                Routes/Protected/Front_Route.cpp
                Routes/Protected/JWT_check.cpp

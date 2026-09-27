@@ -582,7 +582,10 @@ setInterval(() =>
 // MODAL HANDLERS
 // ============================================================
 
-function openModal(title, text)
+let modalDestination = "";
+
+
+function openModal(title, text, destination)
 {
     const modalTitle =
         document.getElementById("modalTitle");
@@ -602,6 +605,9 @@ function openModal(title, text)
     {
         modalBody.innerText = text;
     }
+
+    // Store destination for this particular modal
+    modalDestination = destination;
 
     if (modal)
     {
@@ -624,14 +630,11 @@ function closeModal()
 
 function confirmModalAction()
 {
-    closeModal();
-
-    showToast(
-        "Sprint Request Dispatched",
-        "A peer matching invitation has been sent to available scholars."
-    );
+    if (modalDestination)
+    {
+        window.location.href = modalDestination;
+    }
 }
-
 
 
 // ============================================================
