@@ -213,32 +213,93 @@
   });
 
   // ---- Code Execution Logic ----
-  function executeCode(sourceCode, lang, outputEl){
-    if (lang === "javascript"){
-      var logs = [];
-      var originalLog = console.log;
-      console.log = function(){ logs.push(Array.prototype.slice.call(arguments).map(String).join(" ")); };
-      try {
-        var fn = new Function(sourceCode);
-        fn();
-        outputEl.textContent = logs.length ? logs.join("\n") : "(no output — use console.log to print something)";
-      } catch(err){
-        outputEl.textContent = "Error: " + err.message;
-      } finally {
-        console.log = originalLog;
-      }
-    } else {
-      outputEl.textContent = "Live execution for this language isn't available in this demo room.\nSample output:\n> Compiled and ran successfully.";
+
+async function executeCode(sourceCode, lang, outputEl)
+{
+    sourceCode = sourceCode.trim();
+
+    if (!sourceCode)
+    {
+        outputEl.textContent = "Please write some code first.";
+        return;
     }
-  }
 
-  qs("runBtn").addEventListener("click", function(){
-    executeCode(codeArea.value, langSelect.value, qs("outputBox"));
-  });
+    outputEl.textContent = "Running code...";
 
-  qs("modalRunBtn").addEventListener("click", function(){
-    executeCode(modalCodeArea.value, modalLangSelect.value, qs("modalOutputBox"));
-  });
+    try
+    {
+        const response = await fetch("/Execution",
+        {
+            method: "POST",
+
+            headers:
+            {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(
+            {
+                code: sourceCode,
+                language: lang
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok)
+        {
+            outputEl.textContent =
+                data.message ||
+                data.error ||
+                "Code execution failed.";
+
+            return;
+        }
+
+        /*
+         * Backend response expected:
+         *
+         * {
+         *     "output": "Hello World"
+         * }
+         */
+
+        outputEl.textContent =
+            data.output !== undefined
+                ? data.output
+                : "No output received.";
+
+    }
+    catch (error)
+    {
+        console.error("Execution Error:", error);
+
+        outputEl.textContent =
+            "Unable to connect to execution server.";
+    }
+}
+
+
+// Normal code window
+qs("runBtn").addEventListener("click", function()
+{
+    executeCode(
+        codeArea.value,
+        langSelect.value,
+        qs("outputBox")
+    );
+});
+
+
+// Expanded / modal code window
+qs("modalRunBtn").addEventListener("click", function()
+{
+    executeCode(
+        modalCodeArea.value,
+        modalLangSelect.value,
+        qs("modalOutputBox")
+    );
+});
 
   // ---- Notes ----
   var notesArea = qs("notesArea");
