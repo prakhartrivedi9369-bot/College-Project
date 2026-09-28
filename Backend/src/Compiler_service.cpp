@@ -1,8 +1,9 @@
-#include "One_Compiler.h"
+#include "Compiler_service.h"
 #include <curl/curl.h>
 #include <string>
 #include <cstdlib>
 #include "env_config.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -23,15 +24,16 @@ crow::response One_Compiler(const string& language,const string& code,const stri
         // Get OneCompiler API key
         // ====================================================
 
-        const char* apiKeyEnv = getEnvValue("ONECOMPILER_API_KEY");
+        //const char*
+        string apiKeyEnv = getEnvValue("ONECOMPILER_API_KEY");
 
-        if (!apiKeyEnv)
-        {
-            return crow::response(
-                500,
-                R"({"error":"OneCompiler API key is not configured"})"
-            );
-        }
+     //   if (!apiKeyEnv)
+     //   {
+      //      return crow::response(
+       //         500,
+      //          R"({"error":"OneCompiler API key is not configured"})"
+      //      );
+    //    }
 
         string apiKey = apiKeyEnv;
 
@@ -303,45 +305,57 @@ crow::response One_Compiler(const string& language,const string& code,const stri
         // ====================================================
 
         auto compilerResponse =
-            crow::json::load(apiResponse);
+    crow::json::load(apiResponse);
+
+if (!compilerResponse)
+{
+    crow::response response(
+        502,
+        R"({"error":"Invalid response from OneCompiler"})"
+    );
+
+    response.set_header(
+        "Content-Type",
+        "application/json"
+    );
+
+    return response;
+}
 
 
-        if (!compilerResponse)
-        {
-            crow::json::wvalue response;
+// ====================================================
+// API failure
+// ====================================================
 
-            response["error"] =
-                "Invalid response from OneCompiler";
+if (httpStatus < 200 ||
+    httpStatus >= 300)
+{
+    crow::response response(
+        static_cast<int>(httpStatus),
+        apiResponse
+    );
 
-            response["rawResponse"] =
-                apiResponse;
+    response.set_header(
+        "Content-Type",
+        "application/json"
+    );
 
-            return crow::response(
-                502,
-                response
-            );
-        }
-
-
-        // ====================================================
-        // API failure
-        // ====================================================
-
-        if (httpStatus < 200 ||
-            httpStatus >= 300)
-        {
-            return crow::response(
-                static_cast<int>(httpStatus),
-                compilerResponse
-            );
-        }
+    return response;
+}
 
 
-        // ====================================================
-        // Return OneCompiler response
-        // ====================================================
+// ====================================================
+// Return OneCompiler response
+// ====================================================
 
-        return crow::response(
-            compilerResponse
-        );
+crow::response response(
+    apiResponse
+);
+
+response.set_header(
+    "Content-Type",
+    "application/json"
+);
+
+return response;
 }

@@ -236,93 +236,117 @@ async function executeCode(
     outputEl.textContent =
         "Running code...";
 
-    try
-    {
-        const response =
-            await fetch("/Execution",
+   try
+{
+    const response =
+        await fetch("/Execution",
+        {
+            method: "POST",
+
+            headers:
             {
-                method: "POST",
+                "Content-Type":
+                    "application/json"
+            },
 
-                headers:
-                {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify(
-                {
-                    code: sourceCode,
-                    language: lang,
-                    input: inputValue
-                })
-            });
+            body: JSON.stringify(
+            {
+                code: sourceCode,
+                language: lang,
+                input: inputValue
+            })
+        });
 
 
-        const data =
-            await response.json();
+    const data =
+        await response.json();
 
 
-        if (!response.ok)
+    // ====================================================
+    // Backend / API error
+    // ====================================================
+
+    if (!response.ok)
+    {
+        outputEl.textContent =
+            data.message ||
+            data.error ||
+            "Code execution request failed.";
+
+        return;
+    }
+
+
+    // ====================================================
+    // Program compilation / runtime result
+    // ====================================================
+
+    let result = "";
+
+
+    // Normal program output
+    if (data.stdout)
+    {
+        result += data.stdout;
+    }
+
+
+    // Compilation / runtime error
+    if (data.stderr)
+    {
+        if (result)
         {
-            outputEl.textContent =
-                data.message ||
-                data.error ||
-                "Code execution failed.";
-
-            return;
+            result += "\n\n";
         }
 
+        result += data.stderr;
+    }
 
-        /*
-         * Backend response expected:
-         *
-         * {
-         *     "output": "Hello World"
-         * }
-         */
 
-        if (data.output !== undefined)
+    // Exception
+    if (data.exception)
+    {
+        if (result)
         {
-            outputEl.textContent =
-                data.output;
+            result += "\n\n";
         }
-        else if (data.stdout !== undefined)
+
+        result += data.exception;
+    }
+
+
+    // ====================================================
+    // Nothing received
+    // ====================================================
+
+    if (!result)
+    {
+        if (data.status)
         {
-            outputEl.textContent =
-                data.stdout;
+            result =
+                "Execution status: " +
+                data.status;
         }
         else
         {
-            outputEl.textContent =
+            result =
                 "No output received.";
         }
-
-
-        // Show stderr if backend sends it
-        if (data.stderr)
-        {
-            outputEl.textContent +=
-                "\n\n" + data.stderr;
-        }
-
-
-        // Show exception if backend sends it
-        if (data.exception)
-        {
-            outputEl.textContent +=
-                "\n\n" + data.exception;
-        }
     }
-    catch (error)
-    {
-        console.error(
-            "Execution Error:",
-            error
-        );
 
-        outputEl.textContent =
-            "Unable to connect to execution server.";
-    }
+
+    outputEl.textContent = result;
+}
+catch (error)
+{
+    console.error(
+        "Execution Error:",
+        error
+    );
+
+    outputEl.textContent =
+        "Unable to connect to execution server.";
+}
 }
 
 

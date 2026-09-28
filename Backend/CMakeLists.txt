@@ -54,6 +54,7 @@ add_executable(my_app
                Routes/Public/Membership.cpp
                Routes/Public/Signup_Route.cpp
                src/auth_helper.cpp
+               src/Compiler_service.cpp
                src/crypto_utils.cpp
                src/database.cpp
                src/env_config.cpp
