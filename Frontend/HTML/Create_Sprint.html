@@ -264,12 +264,7 @@
                 <button class="btn btn-primary" id="expandCodeBtn">Expand Editor ⤢</button>
                 <button class="btn btn-primary" id="runBtn">Run code</button>
               </div>
-              <textarea id="codeArea" spellcheck="false">// write and run JavaScript here
-function solve(nums) {
-  console.log("Start optimization");
-  return nums.length;
-}
-console.log(solve([3,1,4,1,5,9,2,6]));</textarea>
+              <textarea id="codeArea" spellcheck="false">// write and run your code here!</textarea>
               <div class="output-box" id="outputBox">Output will appear here.</div>
             </div>
             <div class="tab-content" id="tab-browser">
@@ -344,7 +339,12 @@ console.log(solve([3,1,4,1,5,9,2,6]));</textarea>
       <div class="modal-code-actions">
         <button class="btn btn-primary" id="modalRunBtn">Run Code</button>
       </div>
-      <div class="output-box" id="modalOutputBox">Write your Input here</div>
+      <textarea
+        id="modalInputArea"
+        class="output-box"
+        placeholder="Enter program input here..."
+        spellcheck="false"
+      ></textarea>
       <div class="output-box" id="modalOutputBox">Output will appear here.</div>
     </div>
   </div>

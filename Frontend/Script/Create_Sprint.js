@@ -212,39 +212,55 @@
     });
   });
 
-  // ---- Code Execution Logic ----
+// ---- Code Execution Logic ----
 
-async function executeCode(sourceCode, lang, outputEl)
+async function executeCode(
+    sourceCode,
+    lang,
+    inputValue,
+    outputEl
+)
 {
     sourceCode = sourceCode.trim();
 
+    inputValue = inputValue || "";
+
     if (!sourceCode)
     {
-        outputEl.textContent = "Please write some code first.";
+        outputEl.textContent =
+            "Please write some code first.";
+
         return;
     }
 
-    outputEl.textContent = "Running code...";
+    outputEl.textContent =
+        "Running code...";
 
     try
     {
-        const response = await fetch("/Execution",
-        {
-            method: "POST",
-
-            headers:
+        const response =
+            await fetch("/Execution",
             {
-                "Content-Type": "application/json"
-            },
+                method: "POST",
 
-            body: JSON.stringify(
-            {
-                code: sourceCode,
-                language: lang
-            })
-        });
+                headers:
+                {
+                    "Content-Type":
+                        "application/json"
+                },
 
-        const data = await response.json();
+                body: JSON.stringify(
+                {
+                    code: sourceCode,
+                    language: lang,
+                    input: inputValue
+                })
+            });
+
+
+        const data =
+            await response.json();
+
 
         if (!response.ok)
         {
@@ -256,6 +272,7 @@ async function executeCode(sourceCode, lang, outputEl)
             return;
         }
 
+
         /*
          * Backend response expected:
          *
@@ -264,20 +281,85 @@ async function executeCode(sourceCode, lang, outputEl)
          * }
          */
 
-        outputEl.textContent =
-            data.output !== undefined
-                ? data.output
-                : "No output received.";
+        if (data.output !== undefined)
+        {
+            outputEl.textContent =
+                data.output;
+        }
+        else if (data.stdout !== undefined)
+        {
+            outputEl.textContent =
+                data.stdout;
+        }
+        else
+        {
+            outputEl.textContent =
+                "No output received.";
+        }
 
+
+        // Show stderr if backend sends it
+        if (data.stderr)
+        {
+            outputEl.textContent +=
+                "\n\n" + data.stderr;
+        }
+
+
+        // Show exception if backend sends it
+        if (data.exception)
+        {
+            outputEl.textContent +=
+                "\n\n" + data.exception;
+        }
     }
     catch (error)
     {
-        console.error("Execution Error:", error);
+        console.error(
+            "Execution Error:",
+            error
+        );
 
         outputEl.textContent =
             "Unable to connect to execution server.";
     }
 }
+
+
+// ============================================================
+// Normal code window
+// ============================================================
+
+qs("runBtn").addEventListener(
+    "click",
+    function()
+    {
+        executeCode(
+            codeArea.value,
+            langSelect.value,
+            "",
+            qs("outputBox")
+        );
+    }
+);
+
+
+// ============================================================
+// Expanded / modal code window
+// ============================================================
+
+qs("modalRunBtn").addEventListener(
+    "click",
+    function()
+    {
+        executeCode(
+            modalCodeArea.value,
+            modalLangSelect.value,
+            qs("modalInputArea").value,
+            qs("modalOutputBox")
+        );
+    }
+);
 
 
 // Normal code window

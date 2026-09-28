@@ -3,6 +3,7 @@
 #include "Paths.h"
 #include "auth_helper.h"
 #include "Json_user.h"
+#include "One_Compiler.h"
 
 using namespace std;
 
@@ -63,8 +64,84 @@ void register_Create_Sprint_Routes(crow::SimpleApp& app,RedisManager& RedisManag
            return res;
      });
 
-    // CROW_ROUTE(app, "/Execution").methods("POST"_method)([&RedisManager](const crow::request& req)
-     //{
+     CROW_ROUTE(app, "/Execution").methods("POST"_method)([](const crow::request& req)
+     {
+
+           // ====================================================
+           // Parse frontend request
+           // ====================================================
+
+           auto body = crow::json::load(req.body);
+
+           if (!body)
+           {
+                return crow::response(
+                400,
+                R"({"error":"Invalid JSON request"})"
+            );
+           }
+
+            // ====================================================
+            // Extract language
+            // ====================================================
+
+            if (!body.has("language"))
+            {
+                return crow::response(
+                400,
+                R"({"error":"language is missing"})"
+            );
+            }
             
-     //});
+           string language = body["language"].s();
+
+           // ====================================================
+           // Extract code
+           // ====================================================
+
+           if (!body.has("code"))
+           {
+                return crow::response(
+                400,
+                R"({"error":"code is missing"})"
+            );
+           }
+
+           string code = body["code"].s();   
+           
+           // ====================================================
+           // Extract input
+           // ====================================================
+
+           string input = "";
+
+           if (body.has("input"))
+           {
+                input = body["input"].s();
+           }
+
+           // ====================================================
+           // Basic validation
+           // ====================================================
+
+           if (language.empty())
+           {
+                return crow::response(
+                400,
+                R"({"error":"Language cannot be empty"})"
+            );
+           }
+
+           if (code.empty())
+           {
+                return crow::response(
+                400,
+                R"({"error":"Code cannot be empty"})"
+            );
+            }
+
+            crow::response result = One_Compiler(language,code,input);
+
+            return result;
+     });
 }
