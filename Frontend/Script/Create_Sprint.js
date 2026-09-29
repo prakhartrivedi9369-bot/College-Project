@@ -183,9 +183,24 @@
   var modalLangSelect = qs("modalLangSelect");
   var langSelect = qs("langSelect");
 
+  // Copies the selected language (HTML option value) from one dropdown to the other.
+  // If the target has no such option, it is added so the value never becomes empty.
+  function syncLang(from, to){
+    var val = from.value;
+    var exists = Array.prototype.some.call(to.options, function(o){ return o.value === val; });
+    if (!exists){
+      var src = from.options[from.selectedIndex];
+      var opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = src ? src.textContent : val;
+      to.appendChild(opt);
+    }
+    to.value = val;
+  }
+
   function openCodeModal(){
     modalCodeArea.value = codeArea.value;
-    modalLangSelect.value = langSelect.value;
+    syncLang(langSelect, modalLangSelect);
     codeOverlay.hidden = false;
   }
 
@@ -194,12 +209,12 @@
 
   qs("closeCodeModalBtn").addEventListener("click", function(){
     codeArea.value = modalCodeArea.value;
-    langSelect.value = modalLangSelect.value;
+    syncLang(modalLangSelect, langSelect);
     codeOverlay.hidden = true;
   });
 
   modalLangSelect.addEventListener("change", function(){
-    langSelect.value = this.value;
+    syncLang(modalLangSelect, langSelect);
   });
 
   var tabButtons = document.querySelectorAll(".tab-btn");
@@ -385,27 +400,6 @@ qs("modalRunBtn").addEventListener(
     }
 );
 
-
-// Normal code window
-qs("runBtn").addEventListener("click", function()
-{
-    executeCode(
-        codeArea.value,
-        langSelect.value,
-        qs("outputBox")
-    );
-});
-
-
-// Expanded / modal code window
-qs("modalRunBtn").addEventListener("click", function()
-{
-    executeCode(
-        modalCodeArea.value,
-        modalLangSelect.value,
-        qs("modalOutputBox")
-    );
-});
 
   // ---- Notes ----
   var notesArea = qs("notesArea");

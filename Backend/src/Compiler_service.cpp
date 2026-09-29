@@ -25,15 +25,7 @@ crow::response One_Compiler(const string& language,const string& code,const stri
         // ====================================================
 
         //const char*
-        string apiKeyEnv = getEnvValue("ONECOMPILER_API_KEY");
-
-     //   if (!apiKeyEnv)
-     //   {
-      //      return crow::response(
-       //         500,
-      //          R"({"error":"OneCompiler API key is not configured"})"
-      //      );
-    //    }
+        string apiKeyEnv = getEnvValue("OneCompiler_API_KEY");
 
         string apiKey = apiKeyEnv;
 
@@ -92,7 +84,6 @@ crow::response One_Compiler(const string& language,const string& code,const stri
         {
             fileName = "main.swift";
         }
-
 
         // ====================================================
         // Create OneCompiler JSON request
@@ -176,7 +167,6 @@ crow::response One_Compiler(const string& language,const string& code,const stri
                 headers,
                 apiKeyHeader.c_str()
             );
-
 
         // ====================================================
         // CURL configuration
