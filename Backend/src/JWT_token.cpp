@@ -33,7 +33,7 @@ namespace AuthUtils {
     }
 
     string build_auth_cookie(const string& token) {
-        return "token=" + token + "; HttpOnly; Secure; SameSite=Strict; Max-Age=86400; Path=/";
+        return "token=" + token + "; HttpOnly; SameSite=Strict; Max-Age=86400; Path=/";
     }
 
     string build_logout_cookie() {
