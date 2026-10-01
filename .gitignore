@@ -26,6 +26,8 @@ CPackSourceConfig.cmake
 
 # Secrets
 .env
+Backend/certs/server.crt
+Backend/certs/server.key
 
 #Local Database(Used for local data storage on disk)
 /Backend/SQLite/Data/
