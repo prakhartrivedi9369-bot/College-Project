@@ -630,11 +630,74 @@ function closeModal()
 
 function confirmModalAction()
 {
-    if (modalDestination)
+    closeModal();
+
+    if (modalDestination === "open_sprint_config")
+    {
+        openSprintConfigModal();
+    }
+    else if (modalDestination)
     {
         window.location.href = modalDestination;
     }
 }
+
+
+
+// ============================================================
+// SPRINT CONFIGURATION MODAL HANDLERS
+// ============================================================
+
+function openSprintConfigModal()
+{
+    const sprintModal = document.getElementById("sprintConfigModal");
+    if (sprintModal)
+    {
+        sprintModal.classList.remove("hidden");
+    }
+}
+
+function closeSprintConfigModal()
+{
+    const sprintModal = document.getElementById("sprintConfigModal");
+    if (sprintModal)
+    {
+        sprintModal.classList.add("hidden");
+    }
+}
+
+function toggleStartSprintBtn()
+{
+    const termsCheck = document.getElementById("termsCheckbox");
+    const submitBtn = document.getElementById("startSprintSubmitBtn");
+
+    if (termsCheck && submitBtn)
+    {
+        submitBtn.disabled = !termsCheck.checked;
+    }
+}
+
+function handleStartSprint(event)
+{
+    event.preventDefault();
+
+    closeSprintConfigModal();
+
+    // Show success notification as required
+    showToast(
+        "Sprint Created",
+        "Sprint created successfully and we will notify you when we found someone for sprint."
+    );
+
+    // Reset form fields
+    const form = document.getElementById("sprintConfigForm");
+    if (form)
+    {
+        form.reset();
+    }
+    toggleStartSprintBtn();
+}
+
 
 
 // ============================================================

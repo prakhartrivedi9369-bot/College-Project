@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-<!-- Main Nav Links -->
+            <!-- Main Nav Links -->
             <nav class="hidden md:flex items-center space-x-6 font-mono text-xs text-paper-dark uppercase tracking-wider">
                 <a href="#sprints" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-stopwatch text-brass"></i> Sprints</a>
                 <a href="#leaderboard" class="hover:text-brass-light transition-colors flex items-center gap-1.5"><i class="fa-solid fa-trophy text-brass"></i> Rankings</a>
@@ -87,7 +87,7 @@
 
             <!-- User Quick Status / CTAs -->
             <div class="flex items-center space-x-4">
-                <button onclick="openModal('New Sprint Request', 'Choose a category to launch a peer sprint round immediately.')" class="hidden sm:inline-flex items-center gap-2 bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-semibold px-4 py-2.5 rounded transition-colors shadow">
+                <button onclick="openModal('Launch Sprint Confirmation', 'Are you ready to configure and launch a new peer-to-peer sprint session?', 'open_sprint_config')" class="hidden sm:inline-flex items-center gap-2 bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-semibold px-4 py-2.5 rounded transition-colors shadow">
                     <i class="fa-solid fa-plus"></i> Launch Sprint
                 </button>
                 <div class="flex items-center gap-2 bg-walnut px-3 py-1.5 rounded border border-walnut-light">
@@ -137,15 +137,9 @@
                 <!-- Hero Actions & Badges -->
                 <div class="mt-8 pt-6 border-t border-paper-border flex flex-wrap items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-3">
-                        <button onclick="openModal(
-    'Peer Matchmaker',
-    'Searching for active peers in algorithms and architecture...',
-    '/Create_Sprint'
-)" class="bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider px-6 py-3 rounded flex items-center gap-2 shadow transition-all">
-
-    <i class="fa-solid fa-hourglass-start text-brass-light"></i>
-    Join a Sprint
-</button>
+                        <button onclick="openModal('Peer Matchmaker', 'Searching for active peers in algorithms and architecture...', '/Create_Sprint')" class="bg-walnut hover:bg-walnut-light text-paper-light font-mono text-xs uppercase tracking-wider px-6 py-3 rounded flex items-center gap-2 shadow transition-all">
+                            <i class="fa-solid fa-hourglass-start text-brass-light"></i> Join a Sprint
+                        </button>
                         <a href="#leaderboard" class="bg-paper-light hover:bg-paper-dark text-walnut-dark border border-paper-border font-mono text-xs uppercase tracking-wider px-5 py-3 rounded flex items-center gap-2 transition-all">
                             <i class="fa-solid fa-scroll text-teal"></i> Leaderboard
                         </a>
@@ -166,16 +160,16 @@
                 <div class="flex items-start justify-between border-b border-walnut-light pb-4">
                     <div class="flex items-center gap-3">
                         <a href="Dashboard" class="block">
-                        <div id="userInitials" class="w-12 h-12 rounded-full bg-paper-light text-walnut-dark flex items-center justify-center font-serif font-bold text-xl border-2 border-brass shrink-0">--</div>
+                            <div id="userInitials" class="w-12 h-12 rounded-full bg-paper-light text-walnut-dark flex items-center justify-center font-serif font-bold text-xl border-2 border-brass shrink-0">--</div>
+                        </a>
                         <div class="min-w-0">
-                                <h3 id="firstName" class="font-serif text-lg font-bold text-paper-light truncate">Loading...</h3>
+                            <h3 id="firstName" class="font-serif text-lg font-bold text-paper-light truncate">Loading...</h3>
                             <div class="flex items-center gap-2 mt-1">
                                 <i class="fa-solid fa-fingerprint text-brass-light text-[10px]"></i>
                                 <h4 id="ID" class="font-mono text-[10px] text-brass-light uppercase tracking-wider truncate" title="User ID">Loading...</h4>
                             </div>
                         </div>
                     </div>
-                    </a>
 
                     <div class="flex items-center gap-1.5 shrink-0 ml-3">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -628,14 +622,9 @@
                         <i class="fa-solid fa-award"></i>
                     </div>
                     <span class="font-serif text-2xl font-bold text-paper-light">299 <span class="text-xs font-mono font-normal text-paper-dark/60">/ month</span></span>
-                    <button onclick="openModal(
-    'Scholar Pass Upgrade',
-    'Redirecting to secure scholastic patron checkout portal...',
-    '/Membership'
-)" class="mt-4 w-full bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-bold uppercase tracking-wider py-3 rounded transition-all shadow">
-
-    Claim Scholar Pass
-</button>
+                    <button onclick="openModal('Scholar Pass Upgrade', 'Redirecting to secure scholastic patron checkout portal...', '/Membership')" class="mt-4 w-full bg-brass hover:bg-brass-light text-walnut-dark font-mono text-xs font-bold uppercase tracking-wider py-3 rounded transition-all shadow">
+                        Claim Scholar Pass
+                    </button>
                 </div>
             </div>
         </section>
@@ -681,6 +670,86 @@
             <div class="flex justify-end gap-3 font-mono text-xs">
                 <button onclick="closeModal()" class="px-4 py-2 bg-paper-dark hover:bg-paper-border text-walnut-dark rounded">Close</button>
                 <button onclick="confirmModalAction()" class="px-4 py-2 bg-walnut hover:bg-walnut-light text-paper-light rounded font-bold">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPRINT CONFIGURATION MODAL WINDOW -->
+    <div id="sprintConfigModal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
+        <div class="library-card max-w-xl w-full p-6 sm:p-8 rounded-lg shadow-2xl border-2 border-brass relative max-h-[90vh] flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-3 border-b border-paper-border mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-stopwatch text-brass text-xl"></i>
+                        <h3 class="font-serif text-2xl font-bold text-walnut-dark">Configure Launch Sprint</h3>
+                    </div>
+                    <button onclick="closeSprintConfigModal()" class="text-walnut/60 hover:text-walnut"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <form id="sprintConfigForm" onsubmit="handleStartSprint(event)" class="space-y-4 font-mono text-xs">
+                    <!-- Topic of Sprint -->
+                    <div>
+                        <label class="block font-bold text-walnut-dark mb-1 uppercase tracking-wider">Topic of Sprint *</label>
+                        <input type="text" id="sprintTopic" required placeholder="e.g. Data Structures & Graph Optimization" class="w-full bg-paper-light border border-paper-border rounded px-3 py-2 text-walnut-dark focus:outline-none focus:border-teal">
+                    </div>
+
+                    <!-- Time & Region Selection (Grid) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Time of Sprint -->
+                        <div>
+                            <label class="block font-bold text-walnut-dark mb-1 uppercase tracking-wider">Time / Duration *</label>
+                            <select id="sprintTime" required class="w-full bg-paper-light border border-paper-border rounded px-3 py-2 text-walnut-dark focus:outline-none focus:border-teal">
+                                <option value="15 mins">15 Minutes</option>
+                                <option value="30 mins" selected>30 Minutes</option>
+                                <option value="45 mins">45 Minutes</option>
+                                <option value="60 mins">60 Minutes</option>
+                            </select>
+                        </div>
+
+                        <!-- Match Type (Globally / Locally) -->
+                        <div>
+                            <label class="block font-bold text-walnut-dark mb-1 uppercase tracking-wider">Peer Scope *</label>
+                            <select id="sprintScope" required class="w-full bg-paper-light border border-paper-border rounded px-3 py-2 text-walnut-dark focus:outline-none focus:border-teal">
+                                <option value="Globally">Globally (Worldwide Peers)</option>
+                                <option value="Locally">Locally (Same Campus / Region)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Comment / Message for another person -->
+                    <div>
+                        <label class="block font-bold text-walnut-dark mb-1 uppercase tracking-wider">Comment / Message for Peer</label>
+                        <textarea id="sprintComment" rows="2" placeholder="Add any specific instructions or requirements for your sprint partner..." class="w-full bg-paper-light border border-paper-border rounded px-3 py-2 text-walnut-dark focus:outline-none focus:border-teal"></textarea>
+                    </div>
+
+                    <!-- Terms & Conditions Checkbox -->
+                    <div class="p-3 bg-paper-dark/40 rounded border border-paper-border flex items-start gap-2.5">
+                        <input type="checkbox" id="termsCheckbox" onchange="toggleStartSprintBtn()" class="mt-0.5 rounded accent-teal cursor-pointer">
+                        <label for="termsCheckbox" class="text-walnut/90 font-sans text-xs cursor-pointer select-none">
+                            I have read and agree to the <strong>Terms & Conditions</strong> regarding peer sprint sessions.
+                        </label>
+                    </div>
+
+                    <!-- Safety Warnings Box -->
+                    <div class="p-3.5 bg-red-950/10 border-l-4 border-wax rounded text-[11px] space-y-1.5 font-sans">
+                        <div class="font-mono font-bold text-wax uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Important Usage Warnings
+                        </div>
+                        <ul class="list-disc list-inside text-walnut/90 space-y-1 leading-snug">
+                            <li><strong>Purpose Restriction:</strong> Meet is exclusively used for sprint collaboration and mock problem solving, not for any other non-academic purpose.</li>
+                            <li><strong>Academic Conduct:</strong> Professional decorum and mutual respect must be strictly maintained throughout the session.</li>
+                            <li><strong>Account Penalty:</strong> If found violating guidelines or misusing the platform, it will lead to an <strong>immediate permanent account ban</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div class="pt-2 flex justify-end gap-3 font-mono text-xs">
+                        <button type="button" onclick="closeSprintConfigModal()" class="px-4 py-2.5 bg-paper-dark hover:bg-paper-border text-walnut-dark rounded">Cancel</button>
+                        <button type="submit" id="startSprintSubmitBtn" disabled class="px-5 py-2.5 bg-walnut text-paper-light rounded font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-walnut-light transition-all">
+                            Start Sprint
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

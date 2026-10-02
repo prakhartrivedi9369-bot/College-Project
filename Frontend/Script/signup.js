@@ -4,15 +4,91 @@ const backToForm = document.getElementById("backToForm");
 const password = document.getElementById("password");
 const strength = document.querySelector(".strength");
 
+/* ---------- interest picker ---------- */
+
+const picker = document.getElementById("interestPicker");
+const trigger = document.getElementById("interestTrigger");
+const panel = document.getElementById("interestPanel");
+const interestInput = document.getElementById("interest");
+const triggerIcon = document.getElementById("triggerIcon");
+const triggerText = document.getElementById("triggerText");
+const interestCards = panel.querySelectorAll(".interest-card");
+
+function openPanel() {
+  panel.hidden = false;
+  picker.classList.add("open");
+  trigger.setAttribute("aria-expanded", "true");
+}
+
+function closePanel() {
+  panel.hidden = true;
+  picker.classList.remove("open");
+  trigger.setAttribute("aria-expanded", "false");
+}
+
+function selectInterest(card) {
+  interestInput.value = card.dataset.value;
+  triggerText.textContent = card.dataset.label;
+  triggerIcon.innerHTML = card.querySelector("svg").outerHTML;
+  picker.classList.add("has-value");
+
+  interestCards.forEach((c) => {
+    c.setAttribute("aria-selected", c === card ? "true" : "false");
+  });
+
+  setError("interest", "interestError", "");
+  closePanel();
+  trigger.focus();
+}
+
+function resetInterest() {
+  interestInput.value = "";
+  triggerText.textContent = "Select your interest";
+  triggerIcon.innerHTML = "";
+  picker.classList.remove("has-value", "invalid");
+  interestCards.forEach((c) => c.setAttribute("aria-selected", "false"));
+  closePanel();
+}
+
+trigger.addEventListener("click", () => {
+  if (panel.hidden) {
+    openPanel();
+  } else {
+    closePanel();
+  }
+});
+
+interestCards.forEach((card) => {
+  card.addEventListener("click", () => selectInterest(card));
+});
+
+document.addEventListener("click", (event) => {
+  if (!panel.hidden && !picker.contains(event.target)) {
+    closePanel();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !panel.hidden) {
+    closePanel();
+    trigger.focus();
+  }
+});
+
+/* ---------- helpers ---------- */
+
 function setError(inputId, errorId, message) {
   const input = document.getElementById(inputId);
   const error = document.getElementById(errorId);
 
+  // the hidden interest input shows its error state on the picker wrapper
+  const target = input.type === "hidden" ? input.parentElement : input;
+
   if (message) {
-    input.classList.add("invalid");
+    target.classList.add("invalid");
     error.textContent = message;
   } else {
-    input.classList.remove("invalid");
+    target.classList.remove("invalid");
     error.textContent = "";
   }
 }
@@ -60,6 +136,8 @@ document.querySelectorAll(".password-toggle").forEach((button) => {
   });
 });
 
+/* ---------- submit ---------- */
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -74,6 +152,9 @@ form.addEventListener("submit", async (event) => {
 
   const email =
     document.getElementById("email").value.trim();
+
+  const institution =
+    document.getElementById("institution").value.trim();
 
   const passwordValue =
     password.value;
@@ -148,6 +229,24 @@ form.addEventListener("submit", async (event) => {
     valid = false;
   } else {
     setError("email", "emailError", "");
+  }
+
+  if (!institution) {
+    setError(
+      "institution",
+      "institutionError",
+      "Institution name is required."
+    );
+    valid = false;
+  } else if (institution.length < 2) {
+    setError(
+      "institution",
+      "institutionError",
+      "Enter the full name of your institution."
+    );
+    valid = false;
+  } else {
+    setError("institution", "institutionError", "");
   }
 
   if (!passwordValue) {
@@ -241,6 +340,7 @@ form.addEventListener("submit", async (event) => {
           lastName: lastName,
           username: username,
           email: email,
+          institution: institution,
           password: passwordValue,
           interest: interest
         })
@@ -332,6 +432,8 @@ backToForm.addEventListener(
       .forEach((input) => {
         input.classList.remove("invalid");
       });
+
+    resetInterest();
 
     successState.classList.remove(
       "visible"
