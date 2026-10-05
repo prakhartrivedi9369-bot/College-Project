@@ -677,25 +677,100 @@ function toggleStartSprintBtn()
     }
 }
 
-function handleStartSprint(event)
+async function handleStartSprint(event)
 {
     event.preventDefault();
 
-    closeSprintConfigModal();
+    const submitBtn = document.getElementById("startSprintSubmitBtn");
 
-    // Show success notification as required
-    showToast(
-        "Sprint Created",
-        "Sprint created successfully and we will notify you when we found someone for sprint."
-    );
+    const topic = document.getElementById("sprintTopic").value.trim();
 
-    // Reset form fields
-    const form = document.getElementById("sprintConfigForm");
-    if (form)
+    // "30 mins" -> 30 (integer minutes)
+    const time = document.getElementById("sprintTime").value;
+
+    const scope = document.getElementById("sprintScope").value;
+
+    const comment = document.getElementById("sprintComment").value.trim();
+
+    const payload = {
+        topic: topic,
+        time: time,
+        scope: scope
+    };
+
+    // comment is optional, so it is only sent when the user wrote one
+    if (comment)
     {
-        form.reset();
+        payload.comment = comment;
     }
-    toggleStartSprintBtn();
+
+    const originalBtnText = submitBtn ? submitBtn.innerText : "";
+
+    if (submitBtn)
+    {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Starting...";
+    }
+
+    try
+    {
+        const response = await fetch("/call-sprint",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok)
+        {
+            let message = "Could not create the sprint. Please try again.";
+
+            try
+            {
+                const data = await response.json();
+                message = data.message || message;
+            }
+            catch (e) {}
+
+            // keep the modal open so the user does not lose what they typed
+            showToast("Sprint Failed", message);
+            return;
+        }
+
+        closeSprintConfigModal();
+
+        showToast(
+            "Sprint Created",
+            "Sprint created successfully and we will notify you when we found someone for sprint."
+        );
+
+        // Reset form fields
+        const form = document.getElementById("sprintConfigForm");
+        if (form)
+        {
+            form.reset();
+        }
+    }
+    catch (error)
+    {
+        console.error("Start sprint error:", error);
+
+        showToast("Server Error", "Server connection failed.");
+    }
+    finally
+    {
+        if (submitBtn)
+        {
+            submitBtn.innerText = originalBtnText;
+        }
+
+        // re-enabled only if terms are still ticked (form.reset() clears them)
+        toggleStartSprintBtn();
+    }
 }
 
 

@@ -8,7 +8,7 @@ using namespace std;
 
 // int createUserInDB(const string& username, const string& email, const string& password);
 
-int createUserInDB(const string& username, const string& email, const string& password, const string& firstName,const string& lastName, const string& interest)
+int createUserInDB(const string& username, const string& email, const string& password, const string& firstName,const string& lastName, const string& interest,const string& institution)
 {
     if(!global_db_client)
     { 
@@ -44,7 +44,8 @@ int createUserInDB(const string& username, const string& email, const string& pa
     "password", BCON_UTF8(secure_hash.c_str()),
     "firstName",BCON_UTF8(firstName.c_str()),
     "lastName", BCON_UTF8(lastName.c_str()),
-    "Interest", BCON_UTF8(interest.c_str())
+    "Interest", BCON_UTF8(interest.c_str()),
+    "institution", BCON_UTF8(institution.c_str())
     );
 
     if(!new_user)

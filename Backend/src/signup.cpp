@@ -34,8 +34,9 @@ void handle_signup(const crow::request& req, crow::response& res,RedisManager& R
          string firstName = json_data["firstName"].s();
          string lastName = json_data["lastName"].s();
          string interest = json_data["interest"].s();
+         string institution = json_data["institution"].s();
 
-         int signup_status = createUserInDB(username,email,password,firstName,lastName,interest);
+         int signup_status = createUserInDB(username,email,password,firstName,lastName,interest,institution);
 
          DBStatus Attempt_status = RedisManager.Attempt_check(email,IP,password,RedisManager);
 

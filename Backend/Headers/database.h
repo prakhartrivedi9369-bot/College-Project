@@ -21,7 +21,7 @@ extern mongoc_client_t *user_data_db_client;
 void init_database();
 void cleanup_database();
 DBStatus verifyCredentialsInDB(const string& email, const string& password,RedisManager &RedisManager);
-int createUserInDB(const string& username, const string& email, const string& password, const string& firstName,const string& lastName,const string& interest);
+int createUserInDB(const string& username, const string& email, const string& password, const string& firstName,const string& lastName,const string& interest,const string& institution);
 bool saveLogInDB(AuditLog log);
 int verifyUserInDB(const string& email);
 int New_password(const string& new_password,const string& reset_token,RedisManager &RedisManager,AuditLogger &AuditLogger,const string &IP);
